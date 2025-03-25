@@ -24,7 +24,7 @@ const SignUpForm: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [role, setRole] = useState<UserRole>("jobSeeker"); // Valeur par défaut
+  const [role, setRole] = useState<UserRole>("employee"); // Valeur par défaut
   const [error, setError] = useState<string>("");
 
   const handleSignUp = (e: React.FormEvent) => {
