@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Typography, Box, Paper } from '@mui/material';
 
 import welcomeImage from '../assets/welcome-image.jpg'; // Add your image to assets folder
-import { isAuthenticated } from '../utils/apis/auth';
+import { isAuthenticated } from '../apis/auth';
 // Old import (deprecated)
 import { Grid } from '@mui/material';
 

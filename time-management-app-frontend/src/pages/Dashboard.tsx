@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Box, Button, Container, Paper } from '@mui/material';
-import { isAuthenticated, getCurrentUser, clearAuth } from '../utils/apis/auth';
+import { isAuthenticated, getCurrentUser, clearAuth } from '../apis/auth';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -24,31 +24,34 @@ const Dashboard: React.FC = () => {
   }
   
   return (
-    <Container component="main" maxWidth="md">
-      <Paper elevation={3} sx={{ mt: 8, p: 4 }}>
-        <Typography component="h1" variant="h4" sx={{ mb: 4 }}>
-          Dashboard
-        </Typography>
+    <h1>
+        Dashboard
+    </h1>
+    // <Container component="main" maxWidth="md">
+    //   <Paper elevation={3} sx={{ mt: 8, p: 4 }}>
+    //     <Typography component="h1" variant="h4" sx={{ mb: 4 }}>
+    //       Dashboard-
+    //     </Typography>
         
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Welcome, {user.name}!
-        </Typography>
+    //     <Typography variant="h6" sx={{ mb: 2 }}>
+    //       Welcome, {user.name}!
+    //     </Typography>
         
-        <Typography variant="body1" sx={{ mb: 4 }}>
-          You are now logged in to the Time Management App.
-        </Typography>
+    //     <Typography variant="body1" sx={{ mb: 4 }}>
+    //       You are now logged in to the Time Management App.
+    //     </Typography>
         
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button 
-            variant="contained" 
-            color="secondary" 
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
+    //     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+    //       <Button 
+    //         variant="contained" 
+    //         color="secondary" 
+    //         onClick={handleLogout}
+    //       >
+    //         Logout
+    //       </Button>
+    //     </Box>
+    //   </Paper>
+    // </Container>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert, Link } from '@mui/material';
-import { login } from '../utils/apis/auth';
+import { login } from '../apis/auth';
 
 const SignInForm: React.FC = () => {
   const navigate = useNavigate();

@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import { login } from "../utils/apis/auth";
+import { login } from "../apis/auth";
 
 // Définir les types de rôles disponibles
 type UserRole = "jobSeeker" | "employee" | "employer";
