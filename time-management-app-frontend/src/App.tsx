@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Welcome from './pages/welcome';
+import Welcome from './pages/Welcome';
 import WelcomeHome from './components/WelcomeHome';
 import SignInForm from './components/SignInForm';
 import SignUpForm from './components/SignUpForm';
@@ -31,6 +31,8 @@ const PublicRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
   return <>{children}</>;
 };
+
+
 
 // Create a theme
 const theme = createTheme({
