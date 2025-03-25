@@ -2,9 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+
 import Welcome from './pages/welcome';
-import SignIn from './pages/SignIn';
-import SignUp from './pages/Signup';
+import WelcomeHome from './components/WelcomeHome';
+import SignInForm from './components/SignInForm';
+import SignUpForm from './components/SignUpForm';
 import Dashboard from './pages/Dashboard';
 import { isAuthenticated } from './utils/apis/auth';
 
@@ -48,26 +50,38 @@ const App: React.FC = () => {
       <CssBaseline />
       <Router>
         <Routes>
+          {/* Welcome page with different content based on route */}
           <Route path="/" element={
             <PublicRoute>
-              <Welcome />
+              <Welcome>
+                <WelcomeHome />
+              </Welcome>
             </PublicRoute>
           } />
+          
           <Route path="/signin" element={
             <PublicRoute>
-              <SignIn />
+              <Welcome>
+                <SignInForm />
+              </Welcome>
             </PublicRoute>
           } />
+          
           <Route path="/signup" element={
             <PublicRoute>
-              <SignUp />
+              <Welcome>
+                <SignUpForm />
+              </Welcome>
             </PublicRoute>
           } />
+          
+          {/* Dashboard page (protected) */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           } />
+          
           {/* Redirect any unknown routes to welcome page */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
