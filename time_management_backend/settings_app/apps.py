@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AffiliatesConfig(AppConfig):
+class SettingsAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'affiliates'
+    name = 'settings_app'

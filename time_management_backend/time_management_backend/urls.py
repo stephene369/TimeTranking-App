@@ -17,6 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('users.urls')),  # Include users app URLs
+    path('api/timetracking/', include('timetracking.urls')),
+    path('api/vacations/', include('vacations.urls')),
+    
+    path('api-auth/', include('rest_framework.urls')),  # DRF browsable API auth
+    path('docs/', include_docs_urls(title='Time Management API')),  # API documentation
 ]
