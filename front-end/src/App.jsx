@@ -32,7 +32,7 @@ function App() {
           element={<Navigate to="/student/dashboard" replace />}
         />
         <Route path="/student" element={<StudentLayout />}>
-          <Route path="dashboard" element={<Empty />} />
+          <Route path="dashboard" element={<Dashboard />} />
 
           {/* <Route path="time-tracker" element={<TimeTracker />} />
           <Route path="tasks" element={<Tasks />} />
