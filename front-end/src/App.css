@@ -1,0 +1,14 @@
+
+
+:where(.css-dev-only-do-not-override-19tih0e).ant-layout.ant-layout-has-sider > .ant-layout,
+:where(.css-dev-only-do-not-override-19tih0e).ant-layout.ant-layout-has-sider > .ant-layout-content {
+  width: auto !important;
+  flex: 1;
+}
+
+/* Assurez-vous que le contenu principal prend tout l'espace disponible */
+.site-layout-content {
+  padding: 24px;
+  min-height: 280px;
+  width: 100%;
+}

@@ -8,7 +8,6 @@ from .models import (
     VacationAccrual
 )
 
-
 @admin.register(VacationType)
 class VacationTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'requires_approval', 'counts_against_balance', 'is_active')
