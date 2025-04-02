@@ -1,4 +1,4 @@
-
+/* 
 
 :where(.css-dev-only-do-not-override-19tih0e).ant-layout.ant-layout-has-sider > .ant-layout,
 :where(.css-dev-only-do-not-override-19tih0e).ant-layout.ant-layout-has-sider > .ant-layout-content {
@@ -6,9 +6,47 @@
   flex: 1;
 }
 
-/* Assurez-vous que le contenu principal prend tout l'espace disponible */
 .site-layout-content {
   padding: 24px;
   min-height: 280px;
   width: 100%;
+} */
+
+
+*{
+  margin: 0;
+  padding: 0,;
+}
+
+/* Appliquer à tous les éléments */
+* {
+  transition: all 0.5s ease-in-out;
+}
+
+/* Ou de façon plus spécifique pour certains éléments */
+.menu-item, .button, .logo, .sidebar {
+  transition: 
+    color 0.5s ease, 
+    background-color 0.5s ease, 
+    width 0.5s ease, 
+    height 0.5s ease, 
+    transform 0.5s ease;
+}
+
+
+/* Animation globale pour tous les éléments */
+* {
+  transition: all 0.8s ease;
+}
+
+/* Animations spécifiques pour différentes propriétés */
+button, .ant-menu-item, .logo, .ant-layout-sider {
+  transition: 
+    color 0.8s ease, 
+    background-color 0.8s ease, 
+    width 0.8s ease, 
+    height 0.8s ease, 
+    margin 0.8s ease,
+    padding 0.8s ease,
+    font-size 0.8s ease;
 }

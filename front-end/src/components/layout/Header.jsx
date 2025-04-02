@@ -61,6 +61,7 @@ const HeaderComponent = ({ collapsed, toggleSidebar }) => {
   return (
     <Header style={{ 
       padding: 0, 
+      margin:0,
       background: '#fff',
       display: 'flex',
       alignItems: 'center',

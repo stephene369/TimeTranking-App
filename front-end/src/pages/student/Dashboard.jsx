@@ -130,8 +130,7 @@ const Dashboard = () => {
             </Card>
           </Col>
           
-          {/* Statistics Cards */}
-          <Col xs={24} sm={12} md={6}>
+          <Col span={24}>
             <Card>
               <Statistic 
                 title="Total Study Hours" 
@@ -143,7 +142,7 @@ const Dashboard = () => {
             </Card>
           </Col>
           
-          <Col xs={24} sm={12} md={6}>
+          <Col xs={24} sm={12} md={8} lg={8}>
             <Card>
               <Statistic 
                 title="Tasks Completed" 
@@ -155,7 +154,7 @@ const Dashboard = () => {
             </Card>
           </Col>
           
-          <Col xs={24} sm={12} md={6}>
+          <Col xs={24} sm={12} md={8} lg={8}>
             <Card>
               <Statistic 
                 title="Current Streak" 
@@ -168,7 +167,7 @@ const Dashboard = () => {
             </Card>
           </Col>
           
-          <Col xs={24} sm={12} md={6}>
+          <Col xs={24} sm={12} md={8} lg={8}>
             <Card>
               <Statistic 
                 title="Productivity Score" 

@@ -525,8 +525,8 @@ const Tasks = () => {
         </Col>
         
         {/* Task Statistics */}
-        <Col xs={24} lg={8}>
-          <Card>
+        <Col xs={24} lg={8} style={{ display: 'flex' }}>
+          <Card style={{ width: '100%' }}>
             <Row gutter={[16, 16]}>
               <Col span={24} style={{ textAlign: 'center' }}>
                 <Progress 
@@ -573,9 +573,9 @@ const Tasks = () => {
         </Col>
         
         {/* Quick Add Task */}
-        <Col xs={24} lg={16}>
-          <Card title="Quick Add Task">
-            <Form layout="vertical">
+        <Col xs={24} lg={16} style={{ display: 'flex' }}>
+          <Card title="Quick Add Task" style={{ width: '100%' }} >
+            <Form layout="vertical" >
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item>

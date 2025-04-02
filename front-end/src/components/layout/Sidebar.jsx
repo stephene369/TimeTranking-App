@@ -1,18 +1,20 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
+import { Layout, Menu, Button } from 'antd';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DashboardOutlined,
   ClockCircleOutlined,
   CheckSquareOutlined,
   BookOutlined,
   SettingOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
 
 const Sidebar = ({ collapsed }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
 
   const menuItems = [
@@ -43,6 +45,13 @@ const Sidebar = ({ collapsed }) => {
     },
   ];
 
+  const handleLogout = () => {
+    // Add your logout logic here
+    // For example: clear localStorage, reset auth state, etc.
+    // localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <Sider 
       trigger={null} 
@@ -54,26 +63,59 @@ const Sidebar = ({ collapsed }) => {
         position: 'sticky',
         top: 0,
         left: 0,
+        transition: 'all 0.4s ease'
       }}
     >
-      <div className="logo" style={{ 
-        height: '64px', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        color: 'white',
-        fontSize: collapsed ? '16px' : '20px',
-        fontWeight: 'bold',
-        margin: '16px 0'
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
       }}>
-        {collapsed ? 'TT' : 'TimeTracker'}
+        <div className="logo" style={{ 
+          height: '64px', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          color: 'white',
+          fontSize: collapsed ? '40px' : '20px',
+          fontWeight: 'bold',
+          margin: '16px 0'
+        }}>
+          {collapsed ? 'TT' : 'TimeTracker'}
+        </div>
+        
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[currentPath]}
+          items={menuItems}
+          style={{ flex: '1 0 auto' }}
+        />
+        
+        <div style={{ 
+          padding: '16px',
+          marginTop: 'auto',
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+          <Button
+            type="primary"
+            danger
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+            style={{ 
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: collapsed ? 'center' : 'flex-start'
+            }}
+          >
+            {!collapsed && 'Logout'}
+          </Button>
+        </div>
       </div>
-      <Menu
-        theme="dark"
-        mode="inline"
-        selectedKeys={[currentPath]}
-        items={menuItems}
-      />
     </Sider>
   );
 };

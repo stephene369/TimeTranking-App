@@ -14,11 +14,14 @@ const StudentLayout = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh', padding:0,margin:0}}>
       <Sidebar collapsed={collapsed} />
-      <Layout>
+      <Layout style={{
+        margin:0,
+        padding:0
+      }}>
         <HeaderComponent collapsed={collapsed} toggleSidebar={toggleSidebar} />
-        <Content style={{ margin: '24px 16px', padding: 24, minHeight: 280, background: '#f0f2f5' }}>
+        <Content style={{ margin:'0px 0px', padding: 20, minHeight: 280, background: '#f0f2f5' }}>
           <Outlet />
         </Content>
       </Layout>

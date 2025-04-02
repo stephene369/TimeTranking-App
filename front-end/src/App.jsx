@@ -11,9 +11,7 @@ import TimeTracker from "./pages/student/TimeTracker";
 import Tasks from "./pages/student/Tasks";
 import Resources from "./pages/student/Resources";
 import Settings from "./pages/student/Settings";
-import "./styles/layout-fix.css";
-
-
+import "./App.css";
 
 
 
@@ -33,14 +31,13 @@ function App() {
         />
         <Route path="/student" element={<StudentLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
-
-          {/* <Route path="time-tracker" element={<TimeTracker />} />
+          <Route path="time-tracker" element={<TimeTracker />} />
           <Route path="tasks" element={<Tasks />} />
+
+          {/* 
           <Route path="resources" element={<Resources />} />
           <Route path="settings" element={<Settings />} /> */}
 
-          <Route path="time-tracker" element={<Empty />} />
-          <Route path="tasks" element={<Empty />} />
           <Route path="resources" element={<Empty />} />
           <Route path="settings" element={<Settings />} />
         </Route>
