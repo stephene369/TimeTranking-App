@@ -33,12 +33,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="time-tracker" element={<TimeTracker />} />
           <Route path="tasks" element={<Tasks />} />
-
-          {/* 
           <Route path="resources" element={<Resources />} />
-          <Route path="settings" element={<Settings />} /> */}
-
-          <Route path="resources" element={<Empty />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
