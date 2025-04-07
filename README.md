@@ -43,13 +43,8 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 5. Create a superuser (admin)
 
-```bash
-python manage.py createsuperuser
-```
-
-### 6. Start the Django server
+### 5. Start the Django server
 
 ```bash
 python manage.py runserver
