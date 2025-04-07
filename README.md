@@ -108,31 +108,6 @@ TimeTranking-App/
 └── README.md                # Project documentation
 ```
 
----
-
-## 🛠️ Troubleshooting
-
-### CORS Issues
-
-If you encounter CORS errors, ensure that `django-cors-headers` is properly configured in your `settings.py`:
-
-```python
-INSTALLED_APPS = [
-    # ...
-    'corsheaders',
-    # ...
-]
-
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # Must be placed before CommonMiddleware
-    # ...
-    'django.middleware.common.CommonMiddleware',
-    # ...
-]
-
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
-CORS_ALLOW_CREDENTIALS = True
-```
 
 ### Database Errors
 
