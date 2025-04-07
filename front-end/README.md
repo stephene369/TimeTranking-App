@@ -89,6 +89,10 @@ npm install react react-dom react-router-dom antd @ant-design/icons dayjs chart.
 
 # Start development server
 npm run dev
+
+# start your website locally & development server to run on port 3000
+$ npm run dev -- --port 3000 --host
+
 ```
 
 ## Future Enhancements
