@@ -177,6 +177,7 @@ const Welcome = () => {
                       <strong>Location:</strong> {item.location}
                     </Text>
                   </Space>
+                  
                 }
               />
               <Button>Register</Button>
