@@ -1,284 +1,180 @@
-import React, { useState } from "react";
-import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import {
-  Layout,
-  Menu,
-  Button,
-  Avatar,
-  Dropdown,
-  Badge,
-  Space,
-  Typography,
-  Breadcrumb,
-} from "antd";
-import {
-  DashboardOutlined,
-  ClockCircleOutlined,
-  OrderedListOutlined,
+import React, { useState } from 'react';
+import { Layout, Menu, Spin } from 'antd';
+import { 
+  DashboardOutlined, 
+  ClockCircleOutlined, 
+  CheckSquareOutlined,
   CalendarOutlined,
   BarChartOutlined,
-  UserOutlined,
   BookOutlined,
-  TeamOutlined,
+  UserOutlined,
   SettingOutlined,
-  BellOutlined,
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  FileTextOutlined,
-  GlobalOutlined,
-} from "@ant-design/icons";
+  TeamOutlined
+} from '@ant-design/icons';
+import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import Header from '../components/layout/Header';
 
-const { Header, Sider, Content, Footer } = Layout;
-const { Title } = Typography;
+const { Content, Sider } = Layout;
 
-const DashboardLayout = ({ userType }) => {
+const DashboardLayout = ({ userType = 'student' }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate();
+  const { currentUser, loading, isAuthenticated } = useAuth();
   const location = useLocation();
-
-  // Get current page title from path
-  const getPageTitle = () => {
-    const path = location.pathname.split("/").pop();
-    return path.charAt(0).toUpperCase() + path.slice(1).replace("-", " ");
-  };
-
-  // Get breadcrumb items from path
-  const getBreadcrumbItems = () => {
-    const paths = location.pathname.split("/").filter(Boolean);
-    return paths.map((path, index) => {
-      const url = `/${paths.slice(0, index + 1).join("/")}`;
-      return {
-        title: path.charAt(0).toUpperCase() + path.slice(1).replace("-", " "),
-        path: url,
-      };
-    });
-  };
-
-  // User menu items
-  const userMenu = {
-    items: [
-      { key: "profile", icon: <UserOutlined />, label: "Profile" },
-      { key: "settings", icon: <SettingOutlined />, label: "Settings" },
-      { key: "divider", type: "divider" },
-      { key: "logout", icon: <LogoutOutlined />, label: "Logout" },
-    ],
-    onClick: ({ key }) => {
-      if (key === "logout") {
-        // Handle logout
-        navigate("/login");
-      } else if (key === "profile") {
-        navigate(`/${userType}/profile`);
-      }
-    },
-  };
-
-  // Language menu
-  const languageMenu = {
-    items: [
-      { key: "en", label: "English" },
-      { key: "fr", label: "Français" },
-      { key: "es", label: "Español" },
-    ],
-  };
-
-  // Notification menu
-  const notificationMenu = {
-    items: [
-      { key: "1", label: 'Task "Research Paper" is due tomorrow' },
-      { key: "2", label: 'Workshop "Time Management 101" starts in 1 hour' },
-      { key: "3", label: "You have completed 80% of your weekly goals" },
-    ],
-  };
-
-  // Menu items based on user type
+  
+  // If user is not authenticated, redirect to login page
+  if (!loading && !isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  // If user is authenticated but doesn't have the right role, redirect to their dashboard
+  if (!loading && isAuthenticated && currentUser?.role !== userType) {
+    return <Navigate to={`/${currentUser.role}/dashboard`} replace />;
+  }
+  
+  // Display a spinner while loading
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" tip="Loading..." />
+      </div>
+    );
+  }
+  
+  // Determine menu items based on user type
   const getMenuItems = () => {
-    switch (userType) {
-      case "student":
-        return [
-          {
-            key: "dashboard",
-            icon: <DashboardOutlined />,
-            label: <Link to="/student/dashboard">Dashboard</Link>,
-          },
-          {
-            key: "time-tracker",
-            icon: <ClockCircleOutlined />,
-            label: <Link to="/student/time-tracker">Time Tracker</Link>,
-          },
-          {
-            key: "tasks",
-            icon: <OrderedListOutlined />,
-            label: <Link to="/student/tasks">Tasks</Link>,
-          },
-          {
-            key: "calendar",
-            icon: <CalendarOutlined />,
-            label: <Link to="/student/calendar">Calendar</Link>,
-          },
-          {
-            key: "reports",
-            icon: <BarChartOutlined />,
-            label: <Link to="/student/reports">Reports</Link>,
-          },
-          {
-            key: "resources",
-            icon: <BookOutlined />,
-            label: <Link to="/student/resources">Resources</Link>,
-          },
-        ];
-      case "advisor":
-        return [
-          {
-            key: "dashboard",
-            icon: <DashboardOutlined />,
-            label: <Link to="/advisor/dashboard">Dashboard</Link>,
-          },
-          {
-            key: "students",
-            icon: <TeamOutlined />,
-            label: <Link to="/advisor/students">Students</Link>,
-          },
-          {
-            key: "workshops",
-            icon: <CalendarOutlined />,
-            label: <Link to="/advisor/workshops">Workshops</Link>,
-          },
-        ];
-      case "admin":
-        return [
-          {
-            key: "dashboard",
-            icon: <DashboardOutlined />,
-            label: <Link to="/admin/dashboard">Dashboard</Link>,
-          },
-          {
-            key: "users",
-            icon: <TeamOutlined />,
-            label: <Link to="/admin/users">User Management</Link>,
-          },
-          {
-            key: "content",
-            icon: <FileTextOutlined />,
-            label: <Link to="/admin/content">Content Management</Link>,
-          },
-          {
-            key: "workshops",
-            icon: <CalendarOutlined />,
-            label: <Link to="/admin/workshops">Workshop Management</Link>,
-          },
-          {
-            key: "settings",
-            icon: <SettingOutlined />,
-            label: <Link to="/admin/settings">System Settings</Link>,
-          },
-        ];
-      default:
-        return [];
+    const basePath = `/${userType}`;
+    
+    // Menu for students
+    if (userType === 'student') {
+      return [
+        {
+          key: `${basePath}/dashboard`,
+          icon: <DashboardOutlined />,
+          label: <Link to={`${basePath}/dashboard`}>Dashboard</Link>,
+        },
+        {
+          key: `${basePath}/time-tracker`,
+          icon: <ClockCircleOutlined />,
+          label: <Link to={`${basePath}/time-tracker`}>Time Tracking</Link>,
+        },
+        {
+          key: `${basePath}/tasks`,
+          icon: <CheckSquareOutlined />,
+          label: <Link to={`${basePath}/tasks`}>Tasks</Link>,
+        },
+        {
+          key: `${basePath}/calendar`,
+          icon: <CalendarOutlined />,
+          label: <Link to={`${basePath}/calendar`}>Calendar</Link>,
+        },
+        {
+          key: `${basePath}/reports`,
+          icon: <BarChartOutlined />,
+          label: <Link to={`${basePath}/reports`}>Reports</Link>,
+        },
+        {
+          key: `${basePath}/resources`,
+          icon: <BookOutlined />,
+          label: <Link to={`${basePath}/resources`}>Resources</Link>,
+        },
+        {
+          key: `${basePath}/profile`,
+          icon: <UserOutlined />,
+          label: <Link to={`${basePath}/profile`}>Profile</Link>,
+        },
+      ];
     }
+    
+    // Menu for advisors
+    if (userType === 'advisor') {
+      return [
+        {
+          key: `${basePath}/dashboard`,
+          icon: <DashboardOutlined />,
+          label: <Link to={`${basePath}/dashboard`}>Dashboard</Link>,
+        },
+        {
+          key: `${basePath}/students`,
+          icon: <TeamOutlined />,
+          label: <Link to={`${basePath}/students`}>Students</Link>,
+        },
+        {
+          key: `${basePath}/workshops`,
+          icon: <BookOutlined />,
+          label: <Link to={`${basePath}/workshops`}>Workshops</Link>,
+        },
+        {
+          key: `${basePath}/profile`,
+          icon: <UserOutlined />,
+          label: <Link to={`${basePath}/profile`}>Profile</Link>,
+        },
+      ];
+    }
+    
+    // Menu for administrators
+    if (userType === 'admin') {
+      return [
+        {
+          key: `${basePath}/dashboard`,
+          icon: <DashboardOutlined />,
+          label: <Link to={`${basePath}/dashboard`}>Dashboard</Link>,
+        },
+        {
+          key: `${basePath}/users`,
+          icon: <TeamOutlined />,
+          label: <Link to={`${basePath}/users`}>Users</Link>,
+        },
+        {
+          key: `${basePath}/settings`,
+          icon: <SettingOutlined />,
+          label: <Link to={`${basePath}/settings`}>Settings</Link>,
+        },
+      ];
+    }
+    
+    return [];
   };
-
+  
   return (
-    <Layout style={{ minHeight: "100vh", padding: 0, margin: 0 }}>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        breakpoint="lg"
-        collapsedWidth="80"
-        style={{padding:0,margin:0}}
+    <Layout style={{ minHeight: '100vh',  }}>
+      <Sider 
+        collapsible 
+        collapsed={collapsed} 
+        onCollapse={setCollapsed}
+        style={{
+          overflow: 'auto',
+          height: '100vh',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
       >
-        <div
-          className="logo"
-          style={{
-            height: 64,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "16px 0",
-          }}
-        >
-          {collapsed ? (
-            <ClockCircleOutlined style={{ fontSize: 24, color: "white" }} />
-          ) : (
-            <Title level={4} style={{ color: "white", margin: 0 }}>
-              TimeTracker
-            </Title>
-          )}
+        <div style={{ 
+          height: 32, 
+          margin: 16, 
+          background: 'rgba(255, 255, 255, 0.2)', 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'white',
+          fontWeight: 'bold'
+        }}>
+          {!collapsed ? 'TIME MANAGER' : 'TM'}
         </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={[
-            location.pathname.split("/").pop() || "dashboard",
-          ]}
+        <Menu 
+          theme="dark" 
+          mode="inline" 
+          defaultSelectedKeys={[location.pathname]}
           items={getMenuItems()}
         />
       </Sider>
-      <Layout style={{width:"100%" , padding:"0", margin:0}}>
-        <Header
-          style={{
-            margin: 0,
-            padding: 0,
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
-          />
-
-          <Space style={{ marginRight: 24 }}>
-            <Dropdown menu={languageMenu} placement="bottomRight">
-              <Button type="text" icon={<GlobalOutlined />}>
-                Language
-              </Button>
-            </Dropdown>
-
-            <Dropdown menu={notificationMenu} placement="bottomRight">
-              <Badge count={3}>
-                <Button type="text" icon={<BellOutlined />} />
-              </Badge>
-            </Dropdown>
-
-            <Dropdown menu={userMenu} placement="bottomRight">
-              <Space>
-                <Avatar icon={<UserOutlined />} />
-                <span>
-                  {userType === "student"
-                    ? "John Doe"
-                    : userType === "advisor"
-                    ? "Jane Smith"
-                    : "Admin User"}
-                </span>
-              </Space>
-            </Dropdown>
-          </Space>
-        </Header>
-        <Content style={{ margin: "20px" }}>
-          <div style={{ marginBottom: 16 }}>
-            <Breadcrumb
-              items={getBreadcrumbItems().map((item) => ({
-                title: item.title,
-              }))}
-            />
-            <Title level={3} style={{ margin: "16px 0" }}>
-              {getPageTitle()}
-            </Title>
-          </div>
-          <div style={{ padding: 0, background: "#fff", minHeight: 360 }}>
-            <Outlet />
-          </div>
+      <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'all 0.2s',background:"rgba(110, 128, 211, 0.06)" }}>
+        <Header collapsed={collapsed} setCollapsed={setCollapsed} />
+        <Content style={{ margin: '0 ', padding: 24, background: 'rgba(255, 255, 255, 0)', minHeight: 280 }}>
+          <Outlet />
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Time Tracking App ©{new Date().getFullYear()} Created by VSS at Prince
-          George's Community College
-        </Footer>
       </Layout>
     </Layout>
   );

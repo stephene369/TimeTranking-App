@@ -13,7 +13,7 @@ const DashboardLayout = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' , padding:0, margin:0}}>
-      <Sidebar collapsed={collapsed} />
+      <Sidebar collapsed={collapsed}  />
       <Layout style={{padding:0, margin:0}}>
         <Header 
           collapsed={collapsed}
@@ -22,8 +22,8 @@ const DashboardLayout = () => {
         />
         <Content
           style={{
-            margin: '24px 16px',
-            padding: 24,
+            margin: '0',
+            padding: 0,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
             minHeight: 280,
@@ -31,7 +31,7 @@ const DashboardLayout = () => {
           }}
           className="site-layout-content"
         >
-          <Outlet />
+          <Outlet  />
         </Content>
       </Layout>
     </Layout>
