@@ -1,61 +1,180 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { USER_ROLES } from '../types/user';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import authService, { 
+  getUserInfo, 
+  isAuthenticated as checkIsAuthenticated,
+  clearTokens
+} from '../services/authService';
+import { DEFAULT_USER } from '../types/user';
 
-// Créer le contexte d'authentification
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-// Hook personnalisé pour utiliser le contexte d'authentification
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth doit être utilisé à l\'intérieur d\'un AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
 
-// Provider du contexte d'authentification
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(getUserInfo() || DEFAULT_USER);
+  const [userProfile, setUserProfile] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(checkIsAuthenticated());
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Vérifier l'authentification au chargement
   useEffect(() => {
-    const checkAuth = () => {
-      const user = localStorage.getItem('user');
-      if (user) {
-        setCurrentUser(JSON.parse(user));
-        setIsAuthenticated(true);
+    // Check authentication status on mount
+    const checkAuth = async () => {
+      try {
+        if (checkIsAuthenticated()) {
+          const userInfo = getUserInfo();
+          setCurrentUser(userInfo);
+          setIsAuthenticated(true);
+          
+          // Load user profile if authenticated
+          await refreshUserProfile();
+        }
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        handleLogout();
       }
-      setLoading(false);
     };
-
+    
     checkAuth();
   }, []);
 
-  // Fonction de connexion
-  const login = (userData) => {
-    setCurrentUser(userData);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userData));
-    return true;
+  const refreshUserProfile = async () => {
+    if (!checkIsAuthenticated()) return;
+    
+    setIsLoading(true);
+    try {
+      const profileData = await authService.getUserProfile();
+      setUserProfile(profileData);
+    } catch (error) {
+      console.error('Failed to load user profile:', error);
+      setError('Failed to load user profile');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Fonction de déconnexion
-  const logout = () => {
-    setCurrentUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('user');
+  const handleLogin = async (credentials) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const { user } = await authService.login(credentials);
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      
+      // Load user profile after login
+      await refreshUserProfile();
+      
+      return user;
+    } catch (error) {
+      console.error('Login failed:', error);
+      setError(error.message || 'Login failed');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Valeur du contexte
+  const handleRegister = async (userData) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const result = await authService.register(userData);
+      return result;
+    } catch (error) {
+      console.error('Registration failed:', error);
+      setError(error.message || 'Registration failed');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      clearTokens();
+      setCurrentUser(DEFAULT_USER);
+      setUserProfile(null);
+      setIsAuthenticated(false);
+      setIsLoading(false);
+    }
+  };
+
+  const updateProfile = async (userData) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const updatedUser = await authService.updateUserInfo(userData);
+      setCurrentUser(prevUser => ({ ...prevUser, ...updatedUser }));
+      return updatedUser;
+    } catch (error) {
+      console.error('Profile update failed:', error);
+      setError(error.message || 'Profile update failed');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateProfileDetails = async (profileData) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const updatedProfile = await authService.updateProfileDetails(profileData);
+      setUserProfile(prevProfile => ({ ...prevProfile, ...updatedProfile }));
+      return updatedProfile;
+    } catch (error) {
+      console.error('Profile details update failed:', error);
+      setError(error.message || 'Profile details update failed');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const changePassword = async (passwordData) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const result = await authService.changePassword(passwordData);
+      return result;
+    } catch (error) {
+      console.error('Password change failed:', error);
+      setError(error.message || 'Password change failed');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value = {
     currentUser,
+    userProfile,
     isAuthenticated,
-    loading,
-    login,
-    logout
+    isLoading,
+    error,
+    login: handleLogin,
+    register: handleRegister,
+    logout: handleLogout,
+    updateProfile,
+    updateProfileDetails,
+    changePassword,
+    refreshUserProfile
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

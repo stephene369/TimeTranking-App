@@ -121,7 +121,7 @@ const StudentLayout = ({ children }) => {
                 </Dropdown>
               </div>
             </Header>
-            <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
+            <Content style={{ margin: '0', padding: 0, background: '#fff', minHeight: 280 }}>
               {children}
             </Content>
           </Layout>
