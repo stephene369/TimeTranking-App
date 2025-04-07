@@ -14,7 +14,7 @@ import {
 import {
   DashboardOutlined,
   ClockCircleOutlined,
-  TaskOutlined,
+  OrderedListOutlined,
   CalendarOutlined,
   BarChartOutlined,
   UserOutlined,
@@ -108,7 +108,7 @@ const DashboardLayout = ({ userType }) => {
           },
           {
             key: "tasks",
-            icon: <TaskOutlined />,
+            icon: <OrderedListOutlined />,
             label: <Link to="/student/tasks">Tasks</Link>,
           },
           {
@@ -186,6 +186,7 @@ const DashboardLayout = ({ userType }) => {
         collapsed={collapsed}
         breakpoint="lg"
         collapsedWidth="80"
+        style={{padding:0,margin:0}}
       >
         <div
           className="logo"
@@ -214,7 +215,7 @@ const DashboardLayout = ({ userType }) => {
           items={getMenuItems()}
         />
       </Sider>
-      <Layout style={{width:"100%"}}>
+      <Layout style={{width:"100%" , padding:"0", margin:0}}>
         <Header
           style={{
             margin: 0,
@@ -259,7 +260,7 @@ const DashboardLayout = ({ userType }) => {
             </Dropdown>
           </Space>
         </Header>
-        <Content style={{ margin: "24px 16px 0" }}>
+        <Content style={{ margin: "20px" }}>
           <div style={{ marginBottom: 16 }}>
             <Breadcrumb
               items={getBreadcrumbItems().map((item) => ({

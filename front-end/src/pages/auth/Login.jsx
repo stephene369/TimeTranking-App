@@ -1,83 +1,111 @@
-import React from 'react';
-import { Form, Input, Button, Checkbox, Card, Typography, Divider, message } from 'antd';
-import { UserOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Form, Input, Button, Checkbox, Card, Typography, message } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { USER_ROLES } from '../../types/user';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get previous location if it exists
+  const from = location.state?.from?.pathname || '/';
 
   const onFinish = (values) => {
-    // Simulate login logic
-    console.log('Login values:', values);
-    message.success('Login successful!');
+    setLoading(true);
     
-    // Redirect based on user type (simulated)
-    if (values.username === 'student') {
-      navigate('/student/dashboard');
-    } else if (values.username === 'advisor') {
-      navigate('/advisor/dashboard');
-    } else if (values.username === 'admin') {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/student/dashboard'); // Default to student
-    }
+    // Simulate authentication request
+    setTimeout(() => {
+      // Example user for demonstration
+      const userData = {
+        id: '1',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: values.email,
+        role: values.email.includes('advisor') ? USER_ROLES.ADVISOR : USER_ROLES.STUDENT
+      };
+      
+      const success = login(userData);
+      
+      if (success) {
+        message.success('Login successful!');
+        
+        // Redirect to previous page or appropriate dashboard
+        if (from !== '/') {
+          navigate(from);
+        } else if (userData.role === USER_ROLES.STUDENT) {
+          navigate('/student/dashboard');
+        } else if (userData.role === USER_ROLES.ADVISOR) {
+          navigate('/advisor/dashboard');
+        } else {
+          navigate('/');
+        }
+      } else {
+        message.error('Login failed. Please check your credentials.');
+      }
+      
+      setLoading(false);
+    }, 1000);
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '0 auto', padding: 20 }}>
-      <Card bordered={false} style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: 30 }}>Welcome Back</Title>
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      minHeight: 'calc(100vh - 64px)',
+      padding: '20px'
+    }}>
+      <Card style={{ width: '100%', maxWidth: 400 }}>
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+          <Title level={2}>Login</Title>
+        </div>
         
         <Form
-          name="login_form"
+          name="login"
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          layout="vertical"
           size="large"
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please enter your email!' }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Username (try: student, advisor, admin)" />
+            <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
           
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            rules={[{ required: true, message: 'Please enter your password!' }]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="Password (any value works)" />
+            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
           </Form.Item>
           
           <Form.Item>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item>
-              <Link to="/forgot-password">Forgot password?</Link>
-            </div>
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+            
+            <a style={{ float: 'right' }} href="/forgot-password">
+              Forgot password?
+            </a>
           </Form.Item>
           
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Log in
+            <Button type="primary" htmlType="submit" loading={loading} style={{ width: '100%' }}>
+              Login
             </Button>
           </Form.Item>
           
-          <Divider plain>Or login with</Divider>
-          
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
-            <Button icon={<GoogleOutlined />}>Google</Button>
-            <Button icon={<FacebookOutlined />}>Facebook</Button>
+          <div style={{ textAlign: 'center' }}>
+            Don't have an account? <a href="/register">Register now!</a>
           </div>
         </Form>
-        
-        <div style={{ marginTop: 24, textAlign: 'center' }}>
-          <Text>Don't have an account? </Text>
-          <Link to="/register">Register now</Link>
-        </div>
       </Card>
     </div>
   );

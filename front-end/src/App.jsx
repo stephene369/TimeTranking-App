@@ -1,45 +1,19 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import StudentLayout from "./components/layout/StudentLayout";
-import Dashboard from "./pages/student/Dashboard";
-import TimeTracker from "./pages/student/TimeTracker";
-import Tasks from "./pages/student/Tasks";
-import Resources from "./pages/student/Resources";
-import Settings from "./pages/student/Settings";
-import "./App.css";
+import React, { Suspense } from 'react';
+import { useRoutes } from 'react-router-dom';
+import routes from './routes';
+import { Spin } from 'antd';
 
-
-
-const Empty = () => {
-  return (
-    <div>App</div>
-  )
-}
+const AppRoutes = () => {
+  const element = useRoutes(routes);
+  return element;
+};
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={<Navigate to="/student/dashboard" replace />}
-        />
-        <Route path="/student" element={<StudentLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="time-tracker" element={<TimeTracker />} />
-          <Route path="tasks" element={<Tasks />} />
-          <Route path="resources" element={<Resources />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-      </Routes>
-    </Router>
+    <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Spin size="large" /></div>}>
+      <AppRoutes />
+    </Suspense>
   );
 }
 
 export default App;
-

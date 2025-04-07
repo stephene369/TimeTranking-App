@@ -12,9 +12,9 @@ const DashboardLayout = () => {
   } = theme.useToken();
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' , padding:0, margin:0}}>
       <Sidebar collapsed={collapsed} />
-      <Layout>
+      <Layout style={{padding:0, margin:0}}>
         <Header 
           collapsed={collapsed}
           setCollapsed={setCollapsed}
