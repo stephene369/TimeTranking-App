@@ -18,8 +18,7 @@ sdist/
 var/
 *.egg-info/
 .installed.cfg
-*.egg
-.env
+*.egg   
 .venv
 venv/
 ENV/
