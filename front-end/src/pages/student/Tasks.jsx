@@ -24,9 +24,11 @@ import {
   Calendar,
   Dropdown,
   Menu,
-  Statistic ,
-  
+  Statistic,
+  message,
+  Spin
 } from 'antd';
+
 import { 
   CheckCircleOutlined, 
   ClockCircleOutlined, 
@@ -34,7 +36,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   CalendarOutlined,
-  FilterOutlined,
+  FilterOutlined, // Ajoutez cette ligne
   SortAscendingOutlined,
   UnorderedListOutlined,
   AppstoreOutlined,
@@ -45,119 +47,25 @@ import {
   TagOutlined,
   DownOutlined 
 } from '@ant-design/icons';
-import dayjs from 'dayjs';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
-const { TabPane } = Tabs;
+const { TabPane } = Tabs; // Ajoutez cette ligne
 const { TextArea } = Input;
+import dayjs from 'dayjs';
 
-// Mock data for tasks
-const initialTasks = [
-  {
-    id: 1,
-    title: 'Complete Math Assignment',
-    description: 'Solve problems 1-20 from Chapter 5',
-    dueDate: '2023-11-25',
-    priority: 'high',
-    category: 'Homework',
-    completed: false,
-    reminder: '2023-11-24 18:00',
-    tags: ['math', 'calculus'],
-    subtasks: [
-      { id: 101, title: 'Problems 1-10', completed: true },
-      { id: 102, title: 'Problems 11-20', completed: false },
-    ]
-  },
-  {
-    id: 2,
-    title: 'Read History Textbook',
-    description: 'Read chapters 7-8 and take notes',
-    dueDate: '2023-11-26',
-    priority: 'medium',
-    category: 'Reading',
-    completed: false,
-    reminder: null,
-    tags: ['history', 'notes'],
-    subtasks: []
-  },
-  {
-    id: 3,
-    title: 'Research for Science Project',
-    description: 'Find sources for renewable energy project',
-    dueDate: '2023-12-05',
-    priority: 'high',
-    category: 'Project',
-    completed: false,
-    reminder: '2023-12-03 10:00',
-    tags: ['science', 'research'],
-    subtasks: [
-      { id: 103, title: 'Find 5 academic sources', completed: false },
-      { id: 104, title: 'Create outline', completed: false },
-    ]
-  },
-  {
-    id: 4,
-    title: 'Study for English Quiz',
-    description: 'Review vocabulary and grammar rules',
-    dueDate: '2023-11-24',
-    priority: 'medium',
-    category: 'Study',
-    completed: true,
-    reminder: null,
-    tags: ['english', 'quiz'],
-    subtasks: []
-  },
-  {
-    id: 5,
-    title: 'Complete Programming Assignment',
-    description: 'Implement sorting algorithm and submit code',
-    dueDate: '2023-11-28',
-    priority: 'high',
-    category: 'Homework',
-    completed: false,
-    reminder: '2023-11-27 20:00',
-    tags: ['programming', 'algorithms'],
-    subtasks: [
-      { id: 105, title: 'Implement algorithm', completed: false },
-      { id: 106, title: 'Write documentation', completed: false },
-      { id: 107, title: 'Test code', completed: false },
-    ]
-  },
-  {
-    id: 6,
-    title: 'Prepare Presentation Slides',
-    description: 'Create slides for group presentation',
-    dueDate: '2023-12-10',
-    priority: 'medium',
-    category: 'Project',
-    completed: false,
-    reminder: '2023-12-08 15:00',
-    tags: ['presentation', 'group'],
-    subtasks: []
-  },
-];
+import taskService from '../../services/taskService';
 
-// Task categories
-const categories = [
-  'Homework',
-  'Reading',
-  'Study',
-  'Project',
-  'Exam',
-  'Other'
-];
 
-// Priority options
 const priorities = [
   { value: 'high', label: 'High', color: 'red' },
   { value: 'medium', label: 'Medium', color: 'orange' },
   { value: 'low', label: 'Low', color: 'green' },
 ];
-
 const Tasks = () => {
   const [form] = Form.useForm();
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [viewMode, setViewMode] = useState('list');
@@ -165,8 +73,190 @@ const Tasks = () => {
   const [filterCategory, setFilterCategory] = useState(null);
   const [filterPriority, setFilterPriority] = useState(null);
   const [subtasks, setSubtasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+
+
+  // Table columns
+const columns = [
+  {
+    title: 'Status',
+    dataIndex: 'completed',
+    key: 'completed',
+    render: (completed, record) => (
+      <Checkbox 
+        checked={completed} 
+        onChange={() => toggleTaskCompletion(record.id)}
+      />
+    ),
+    width: 80,
+  },
+  {
+    title: 'Task',
+    dataIndex: 'title',
+    key: 'title',
+    render: (text, record) => (
+      <div>
+        <Text 
+          style={{ 
+            textDecoration: record.completed ? 'line-through' : 'none',
+            opacity: record.completed ? 0.5 : 1,
+          }}
+          strong
+        >
+          {text}
+        </Text>
+        {record.description && (
+          <div>
+            <Text 
+              type="secondary" 
+              ellipsis={{ rows: 1 }}
+              style={{ 
+                opacity: record.completed ? 0.5 : 1,
+              }}
+            >
+              {record.description}
+            </Text>
+          </div>
+        )}
+        {record.subtasks && record.subtasks.length > 0 && (
+          <div style={{ marginTop: 4 }}>
+            <Progress 
+              percent={Math.round(
+                (record.subtasks.filter(st => st.completed).length / record.subtasks.length) * 100
+              )} 
+              size="small" 
+              format={() => `${record.subtasks.filter(st => st.completed).length}/${record.subtasks.length}`}
+            />
+          </div>
+        )}
+      </div>
+    ),
+  },
+  {
+    title: 'Due Date',
+    dataIndex: 'due_date',
+    key: 'due_date',
+    render: (dueDate) => {
+      if (!dueDate) return <Text type="secondary">No date</Text>;
+      
+      const isOverdue = dayjs(dueDate).isBefore(dayjs(), 'day');
+      const isToday = dueDate === dayjs().format('YYYY-MM-DD');
+      
+      return (
+        <Text 
+          type={isOverdue ? 'danger' : isToday ? 'warning' : 'secondary'}
+          strong={isOverdue || isToday}
+        >
+          {isToday ? 'Today' : dayjs(dueDate).format('MMM D, YYYY')}
+        </Text>
+      );
+    },
+    sorter: (a, b) => {
+      if (!a.due_date && !b.due_date) return 0;
+      if (!a.due_date) return 1;
+      if (!b.due_date) return -1;
+      return dayjs(a.due_date).unix() - dayjs(b.due_date).unix();
+    },
+  },
+  {
+    title: 'Priority',
+    dataIndex: 'priority',
+    key: 'priority',
+    render: priority => (
+      <Tag color={getPriorityColor(priority)}>
+        {getPriorityLabel(priority)}
+      </Tag>
+    ),
+    filters: priorities.map(priority => ({ text: priority.label, value: priority.value })),
+    onFilter: (value, record) => record.priority === value,
+    width: 100,
+  },
+  {
+    title: 'Category',
+    dataIndex: 'category',
+    key: 'category',
+    render: (category, record) => <Tag>{record.category_name || category}</Tag>,
+    filters: categories.map(category => ({ text: category, value: category })),
+    onFilter: (value, record) => (record.category_name || record.category) === value,
+    width: 120,
+  },
+  {
+    title: 'Actions',
+    key: 'actions',
+    render: (_, record) => (
+      <Space>
+        <Tooltip title="Edit">
+          <Button 
+            icon={<EditOutlined />} 
+            size="small" 
+            onClick={() => showEditModal(record)}
+          />
+        </Tooltip>
+        <Tooltip title="Delete">
+          <Button 
+            icon={<DeleteOutlined />} 
+            size="small" 
+            danger
+            onClick={() => deleteTask(record.id)}
+          />
+        </Tooltip>
+      </Space>
+    ),
+    width: 120,
+  },
+];
+
   
-  // Show modal to add new task
+  // Charger les tâches et les catégories au chargement du composant
+  useEffect(() => {
+// Dans Tasks.jsx, modifiez la fonction fetchData dans useEffect
+const fetchData = async () => {
+  try {
+    setLoading(true);
+    
+    // Construire les filtres
+    const filters = {};
+    if (filterStatus !== 'all') filters.status = filterStatus;
+    if (filterCategory) filters.category = filterCategory;
+    if (filterPriority) filters.priority = filterPriority;
+    
+    // Charger les catégories d'abord
+    let categoriesData = [];
+    try {
+      categoriesData = await taskService.getCategories();
+    } catch (err) {
+      console.warn('Could not load categories, using defaults:', err);
+      categoriesData = categories.map(cat => ({ id: cat, name: cat }));
+    }
+    
+    setCategories(categoriesData.map(cat => cat.name || cat));
+    
+    // Ensuite essayer de charger les tâches
+    try {
+      const tasksData = await taskService.getTasks(filters);
+      // Vérifier que tasksData est un tableau
+      setTasks(Array.isArray(tasksData) ? tasksData : []);
+    } catch (err) {
+      console.error('Error loading tasks:', err);
+      setError('Failed to load tasks. Please try again later.');
+      setTasks([]); // Réinitialiser à un tableau vide en cas d'erreur
+    }
+    
+    setLoading(false);
+  } catch (err) {
+    console.error('Error in data loading process:', err);
+    setError('An error occurred while loading data.');
+    setLoading(false);
+  }
+};
+
+    
+    fetchData();
+  }, [filterStatus, filterCategory, filterPriority]);
+  
+  // Afficher le modal pour ajouter une tâche
   const showAddModal = () => {
     setEditingTask(null);
     form.resetFields();
@@ -179,344 +269,246 @@ const Tasks = () => {
     setIsModalVisible(true);
   };
   
-  // Show modal to edit task
-  const showEditModal = (task) => {
+  // Afficher le modal pour éditer une tâche
+  const showEditModal = async (task) => {
     setEditingTask(task);
-    form.setFieldsValue({
-      title: task.title,
-      description: task.description,
-      dueDate: task.dueDate ? dayjs(task.dueDate) : null,
-      priority: task.priority,
-      category: task.category,
-      reminder: task.reminder ? dayjs(task.reminder) : null,
-      tags: task.tags ? task.tags.join(', ') : '',
-    });
-    setSubtasks(task.subtasks || []);
-    setIsModalVisible(true);
+    
+    try {
+      // Charger les détails complets de la tâche si nécessaire
+      const taskDetails = await taskService.getTask(task.id);
+      
+      form.setFieldsValue({
+        title: taskDetails.title,
+        description: taskDetails.description,
+        dueDate: taskDetails.due_date ? dayjs(taskDetails.due_date) : null,
+        priority: taskDetails.priority,
+        category: taskDetails.category_name,
+        reminder: taskDetails.reminder ? dayjs(taskDetails.reminder) : null,
+        tags: taskDetails.tags ? taskDetails.tags : '',
+      });
+      
+      setSubtasks(taskDetails.subtasks || []);
+      setIsModalVisible(true);
+    } catch (err) {
+      console.error('Error loading task details:', err);
+      message.error('Failed to load task details');
+    }
   };
   
-  // Handle modal OK button
-  const handleModalOk = () => {
-    form.validateFields().then(values => {
+  // Gérer le bouton OK du modal
+  const handleModalOk = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log(values)
       const { title, description, dueDate, priority, category, reminder, tags } = values;
       
-      const formattedTags = tags ? tags.split(',').map(tag => tag.trim()) : [];
+      // Formater les tags
+      const formattedTags = tags ? tags.split(',').map(tag => tag.trim()).join(',') : '';
+      
+      const taskData = {
+        title,
+        description,
+        due_date: dueDate ? dueDate.format('YYYY-MM-DD') : null,
+        priority,
+        category: category, // Vous devrez peut-être ajuster cela pour envoyer l'ID de la catégorie
+        reminder: reminder ? reminder.format('YYYY-MM-DD HH:mm') : null,
+        tags: formattedTags,
+      };
       
       if (editingTask) {
-        // Update existing task
-        const updatedTasks = tasks.map(task => 
-          task.id === editingTask.id 
-            ? {
-                ...task,
-                title,
-                description,
-                dueDate: dueDate ? dueDate.format('YYYY-MM-DD') : null,
-                priority,
-                category,
-                reminder: reminder ? reminder.format('YYYY-MM-DD HH:mm') : null,
-                tags: formattedTags,
-                subtasks,
-              }
-            : task
-        );
-        setTasks(updatedTasks);
+        // Mettre à jour une tâche existante
+        await taskService.updateTask(editingTask.id, taskData);
+        
+        // Mettre à jour les sous-tâches
+        // Note: Cela pourrait nécessiter une logique plus complexe pour gérer les ajouts/suppressions
+        for (const subtask of subtasks) {
+          if (subtask.id && subtask.id > 0) {
+            // Mettre à jour une sous-tâche existante
+            await taskService.updateSubtask(subtask.id, {
+              title: subtask.title,
+              completed: subtask.completed
+            });
+          } else {
+            // Créer une nouvelle sous-tâche
+            await taskService.createSubtask(editingTask.id, {
+              title: subtask.title,
+              completed: subtask.completed
+            });
+          }
+        }
+        
         message.success('Task updated successfully!');
       } else {
-        // Add new task
-        const newTask = {
-          id: Date.now(),
-          title,
-          description,
-          dueDate: dueDate ? dueDate.format('YYYY-MM-DD') : null,
-          priority,
-          category,
-          completed: false,
-          reminder: reminder ? reminder.format('YYYY-MM-DD HH:mm') : null,
-          tags: formattedTags,
-          subtasks,
-        };
-        setTasks([newTask, ...tasks]);
+        // Créer une nouvelle tâche
+        const newTask = await taskService.createTask(taskData);
+        
+        // Ajouter les sous-tâches
+        for (const subtask of subtasks) {
+          await taskService.createSubtask(newTask.id, {
+            title: subtask.title,
+            completed: subtask.completed
+          });
+        }
+        
         message.success('Task added successfully!');
       }
+      
+      // Recharger les tâches
+      const updatedTasks = await taskService.getTasks({
+        status: filterStatus !== 'all' ? filterStatus : null,
+        category: filterCategory,
+        priority: filterPriority
+      });
+      setTasks(updatedTasks);
       
       setIsModalVisible(false);
       form.resetFields();
       setSubtasks([]);
-    });
+    } catch (err) {
+      console.error('Error saving task:', err);
+      message.error('Failed to save task');
+    }
   };
   
-  // Delete task
+  // Supprimer une tâche
   const deleteTask = (id) => {
     Modal.confirm({
       title: 'Confirm Deletion',
       content: 'Are you sure you want to delete this task?',
-      onOk: () => {
-        const updatedTasks = tasks.filter(task => task.id !== id);
-        setTasks(updatedTasks);
-        message.success('Task deleted successfully!');
+      onOk: async () => {
+        try {
+          await taskService.deleteTask(id);
+          
+          // Mettre à jour la liste des tâches
+          setTasks(tasks.filter(task => task.id !== id));
+          message.success('Task deleted successfully!');
+        } catch (err) {
+          console.error('Error deleting task:', err);
+          message.error('Failed to delete task');
+        }
       },
     });
   };
   
-  // Toggle task completion
-  const toggleTaskCompletion = (id) => {
-    const updatedTasks = tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    );
-    setTasks(updatedTasks);
+  // Basculer l'état de complétion d'une tâche
+  const toggleTaskCompletion = async (id) => {
+    try {
+      await taskService.toggleTaskCompletion(id);
+      
+      // Mettre à jour l'état local
+      setTasks(tasks.map(task => 
+        task.id === id ? { ...task, completed: !task.completed } : task
+      ));
+    } catch (err) {
+      console.error('Error toggling task completion:', err);
+      message.error('Failed to update task status');
+    }
   };
   
-  // Add subtask
+  // Ajouter une sous-tâche
   const addSubtask = () => {
     const newSubtask = {
-      id: Date.now(),
+      id: -Date.now(), // ID temporaire négatif pour les nouvelles sous-tâches
       title: '',
       completed: false,
     };
     setSubtasks([...subtasks, newSubtask]);
   };
   
-  // Update subtask
+  // Mettre à jour une sous-tâche
   const updateSubtask = (id, title) => {
-    const updatedSubtasks = subtasks.map(subtask => 
+    setSubtasks(subtasks.map(subtask => 
       subtask.id === id ? { ...subtask, title } : subtask
-    );
-    setSubtasks(updatedSubtasks);
+    ));
   };
   
-  // Toggle subtask completion
+  // Basculer l'état de complétion d'une sous-tâche
   const toggleSubtaskCompletion = (id) => {
-    const updatedSubtasks = subtasks.map(subtask => 
+    setSubtasks(subtasks.map(subtask => 
       subtask.id === id ? { ...subtask, completed: !subtask.completed } : subtask
-    );
-    setSubtasks(updatedSubtasks);
+    ));
   };
   
-  // Delete subtask
-  const deleteSubtask = (id) => {
-    const updatedSubtasks = subtasks.filter(subtask => subtask.id !== id);
-    setSubtasks(updatedSubtasks);
-  };
-  
-  // Filter tasks
-  const getFilteredTasks = () => {
-    return tasks.filter(task => {
-      let matchesStatus = true;
-      let matchesCategory = true;
-      let matchesPriority = true;
-      
-      if (filterStatus === 'completed') {
-        matchesStatus = task.completed;
-      } else if (filterStatus === 'active') {
-        matchesStatus = !task.completed;
+  // Supprimer une sous-tâche
+  const deleteSubtask = async (id) => {
+    // Si c'est une sous-tâche existante (ID positif), la supprimer du serveur
+    if (id > 0 && editingTask) {
+      try {
+        await taskService.deleteSubtask(id);
+      } catch (err) {
+        console.error('Error deleting subtask:', err);
+        message.error('Failed to delete subtask');
+        return;
       }
-      
-      if (filterCategory) {
-        matchesCategory = task.category === filterCategory;
-      }
-      
-      if (filterPriority) {
-        matchesPriority = task.priority === filterPriority;
-      }
-      
-      return matchesStatus && matchesCategory && matchesPriority;
-    });
-  };
-  
-  // Calculate task statistics
-  const calculateTaskStats = () => {
-    const total = tasks.length;
-    const completed = tasks.filter(task => task.completed).length;
-    const active = total - completed;
-    const dueToday = tasks.filter(task => 
-      !task.completed && task.dueDate === dayjs().format('YYYY-MM-DD')
-    ).length;
-    const overdue = tasks.filter(task => 
-      !task.completed && task.dueDate && dayjs(task.dueDate).isBefore(dayjs(), 'day')
-    ).length;
+    }
     
-    return { total, completed, active, dueToday, overdue };
+    // Mettre à jour l'état local
+    setSubtasks(subtasks.filter(subtask => subtask.id !== id));
   };
   
-  // Calculate completion percentage
+  // Calculer les statistiques des tâches
+// Dans la fonction calculateTaskStats
+const calculateTaskStats = () => {
+  // Vérifier que tasks est un tableau
+  const tasksArray = Array.isArray(tasks) ? tasks : [];
+  
+  const total = tasksArray.length;
+  const completed = tasksArray.filter(task => task.completed).length;
+  const active = total - completed;
+  const dueToday = tasksArray.filter(task => 
+    !task.completed && task.due_date === dayjs().format('YYYY-MM-DD')
+  ).length;
+  const overdue = tasksArray.filter(task => 
+    !task.completed && task.due_date && dayjs(task.due_date).isBefore(dayjs(), 'day')
+  ).length;
+  
+  return { total, completed, active, dueToday, overdue };
+};
+
+  
+  // Calculer le pourcentage de complétion
   const calculateCompletionPercentage = () => {
     const { total, completed } = calculateTaskStats();
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
   
-  // Get priority color
+  // Obtenir la couleur de priorité
   const getPriorityColor = (priority) => {
     const priorityObj = priorities.find(p => p.value === priority);
     return priorityObj ? priorityObj.color : 'default';
   };
   
-  // Get priority label
+  // Obtenir le libellé de priorité
   const getPriorityLabel = (priority) => {
     const priorityObj = priorities.find(p => p.value === priority);
     return priorityObj ? priorityObj.label : 'Unknown';
   };
-  
-  // Table columns
-  const columns = [
-    {
-      title: 'Status',
-      dataIndex: 'completed',
-      key: 'completed',
-      render: (completed, record) => (
-        <Checkbox 
-          checked={completed} 
-          onChange={() => toggleTaskCompletion(record.id)}
-        />
-      ),
-      width: 80,
-    },
-    {
-      title: 'Task',
-      dataIndex: 'title',
-      key: 'title',
-      render: (text, record) => (
-        <div>
-          <Text 
-            style={{ 
-              textDecoration: record.completed ? 'line-through' : 'none',
-              opacity: record.completed ? 0.5 : 1,
-            }}
-            strong
-          >
-            {text}
-          </Text>
-          {record.description && (
-            <div>
-              <Text 
-                type="secondary" 
-                ellipsis={{ rows: 1 }}
-                style={{ 
-                  opacity: record.completed ? 0.5 : 1,
-                }}
-              >
-                {record.description}
-              </Text>
-            </div>
-          )}
-          {record.subtasks && record.subtasks.length > 0 && (
-            <div style={{ marginTop: 4 }}>
-              <Progress 
-                percent={Math.round(
-                  (record.subtasks.filter(st => st.completed).length / record.subtasks.length) * 100
-                )} 
-                size="small" 
-                format={() => `${record.subtasks.filter(st => st.completed).length}/${record.subtasks.length}`}
-              />
-            </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: 'Due Date',
-      dataIndex: 'dueDate',
-      key: 'dueDate',
-      render: (dueDate) => {
-        if (!dueDate) return <Text type="secondary">No date</Text>;
-        
-        const isOverdue = dayjs(dueDate).isBefore(dayjs(), 'day');
-        const isToday = dueDate === dayjs().format('YYYY-MM-DD');
-        
-        return (
-          <Text 
-            type={isOverdue ? 'danger' : isToday ? 'warning' : 'secondary'}
-            strong={isOverdue || isToday}
-          >
-            {isToday ? 'Today' : dayjs(dueDate).format('MMM D, YYYY')}
-          </Text>
-        );
-      },
-      sorter: (a, b) => {
-        if (!a.dueDate && !b.dueDate) return 0;
-        if (!a.dueDate) return 1;
-        if (!b.dueDate) return -1;
-        return dayjs(a.dueDate).unix() - dayjs(b.dueDate).unix();
-      },
-    },
-    {
-      title: 'Priority',
-      dataIndex: 'priority',
-      key: 'priority',
-      render: priority => (
-        <Tag color={getPriorityColor(priority)}>
-          {getPriorityLabel(priority)}
-        </Tag>
-      ),
-      filters: priorities.map(priority => ({ text: priority.label, value: priority.value })),
-      onFilter: (value, record) => record.priority === value,
-      width: 100,
-    },
-    {
-      title: 'Category',
-      dataIndex: 'category',
-      key: 'category',
-      render: category => <Tag>{category}</Tag>,
-      filters: categories.map(category => ({ text: category, value: category })),
-      onFilter: (value, record) => record.category === value,
-      width: 120,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="Edit">
-            <Button 
-              icon={<EditOutlined />} 
-              size="small" 
-              onClick={() => showEditModal(record)}
-            />
-          </Tooltip>
-          <Tooltip title="Delete">
-            <Button 
-              icon={<DeleteOutlined />} 
-              size="small" 
-              danger
-              onClick={() => deleteTask(record.id)}
-            />
-          </Tooltip>
-        </Space>
-      ),
-      width: 120,
-    },
-  ];
-  
-  // Calendar cell renderer
-  const dateCellRender = (value) => {
-    const dateStr = value.format('YYYY-MM-DD');
-    const tasksForDate = tasks.filter(task => task.dueDate === dateStr);
-    
-    if (tasksForDate.length === 0) {
-      return null;
-    }
-    
+
+  // Rendu du composant
+  if (loading) {
     return (
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {tasksForDate.slice(0, 2).map((task, index) => (
-          <li key={index}>
-            <Badge 
-              status={task.completed ? 'success' : 'processing'} 
-              text={<Text ellipsis style={{ fontSize: '12px' }}>{task.title}</Text>} 
-            />
-          </li>
-        ))}
-        {tasksForDate.length > 2 && (
-          <li>
-            <Text type="secondary" style={{ fontSize: '12px' }}>+{tasksForDate.length - 2} more</Text>
-          </li>
-        )}
-      </ul>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" tip="Loading tasks..." />
+      </div>
     );
-  };
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <Typography.Title level={3} type="danger">Error</Typography.Title>
+        <Typography.Paragraph>{error}</Typography.Paragraph>
+        <Button type="primary" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div>
       <Row gutter={[16, 16]}>
+        {/* Le reste du JSX reste largement inchangé, mais utilisez les données dynamiques */}
         <Col span={24}>
           <Card>
             <Title level={4}>Task Manager</Title>
@@ -573,44 +565,7 @@ const Tasks = () => {
         </Col>
         
         {/* Quick Add Task */}
-        <Col xs={24} lg={16} style={{ display: 'flex' }}>
-          <Card title="Quick Add Task" style={{ width: '100%' }} >
-            <Form layout="vertical" >
-              <Row gutter={16}>
-                <Col xs={24} md={12}>
-                  <Form.Item>
-                    <Input placeholder="Task title" size="large" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Row gutter={8}>
-                    <Col span={12}>
-                      <Form.Item>
-                        <DatePicker placeholder="Due date" style={{ width: '100%' }} />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item>
-                        <Select placeholder="Priority" style={{ width: '100%' }}>
-                          {priorities.map(priority => (
-                            <Option key={priority.value} value={priority.value}>
-                              {priority.label}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24} style={{ textAlign: 'right' }}>
-                  <Button type="primary" icon={<PlusOutlined />}>
-                    Add Task
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          </Card>
-        </Col>
+        {/* ... Le reste du code reste similaire ... */}
         
         {/* Task List */}
         <Col span={24}>
@@ -703,14 +658,16 @@ const Tasks = () => {
                 {viewMode === 'list' ? (
                   <Table 
                     columns={columns} 
-                    dataSource={getFilteredTasks()} 
+                    dataSource={tasks} 
                     rowKey="id"
                     pagination={{ pageSize: 10 }}
+                    loading={loading}
                   />
                 ) : (
                   <List
                     grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 4 }}
-                    dataSource={getFilteredTasks()}
+                    dataSource={tasks}
+                    loading={loading}
                     renderItem={task => (
                       <List.Item>
                         <Card
@@ -768,23 +725,23 @@ const Tasks = () => {
                               <Tag color={getPriorityColor(task.priority)}>
                                 {getPriorityLabel(task.priority)}
                               </Tag>
-                              <Tag>{task.category}</Tag>
+                              <Tag>{task.category_name || task.category}</Tag>
                             </Space>
                           </div>
                           
-                          {task.dueDate && (
+                          {task.due_date && (
                             <div style={{ marginBottom: 12 }}>
                               <Text 
                                 type={
-                                  dayjs(task.dueDate).isBefore(dayjs(), 'day') ? 'danger' : 
-                                  task.dueDate === dayjs().format('YYYY-MM-DD') ? 'warning' : 
+                                  dayjs(task.due_date).isBefore(dayjs(), 'day') ? 'danger' : 
+                                  task.due_date === dayjs().format('YYYY-MM-DD') ? 'warning' : 
                                   'secondary'
                                 }
                               >
                                 <CalendarOutlined style={{ marginRight: 4 }} />
-                                {task.dueDate === dayjs().format('YYYY-MM-DD') ? 
+                                {task.due_date === dayjs().format('YYYY-MM-DD') ? 
                                   'Today' : 
-                                  dayjs(task.dueDate).format('MMM D, YYYY')}
+                                  dayjs(task.due_date).format('MMM D, YYYY')}
                               </Text>
                             </div>
                           )}
@@ -815,7 +772,32 @@ const Tasks = () => {
                 key="calendar"
               >
                 <Calendar 
-                  dateCellRender={dateCellRender}
+                  dateCellRender={(value) => {
+                    const dateStr = value.format('YYYY-MM-DD');
+                    const tasksForDate = tasks.filter(task => task.due_date === dateStr);
+                    
+                    if (tasksForDate.length === 0) {
+                      return null;
+                    }
+                    
+                    return (
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        {tasksForDate.slice(0, 2).map((task, index) => (
+                          <li key={index}>
+                            <Badge 
+                              status={task.completed ? 'success' : 'processing'} 
+                              text={<Text ellipsis style={{ fontSize: '12px' }}>{task.title}</Text>} 
+                            />
+                          </li>
+                        ))}
+                        {tasksForDate.length > 2 && (
+                          <li>
+                            <Text type="secondary" style={{ fontSize: '12px' }}>+{tasksForDate.length - 2} more</Text>
+                          </li>
+                        )}
+                      </ul>
+                    );
+                  }}
                 />
               </TabPane>
             </Tabs>
