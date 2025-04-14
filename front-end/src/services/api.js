@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken, setTokens, clearTokens, refreshAccessToken } from './authService';
+import authService, { getToken, setTokens, clearTokens } from './authService';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -35,7 +35,7 @@ api.interceptors.response.use(
       
       try {
         // Essayer de rafraîchir le token
-        const newToken = await refreshAccessToken();
+        const newToken = await authService.refreshAccessToken();
         
         // Si nous avons un nouveau token, mettre à jour la requête et réessayer
         if (newToken) {
@@ -55,3 +55,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+

@@ -291,6 +291,9 @@ const authService = {
       throw error;
     }
   },
+
+
+  
   
   // Check if user is authenticated
   isAuthenticated: () => {
@@ -299,3 +302,5 @@ const authService = {
 };
 
 export default authService;
+// Dans authService.js, ajoutez cette ligne après la définition de authService
+export const refreshAccessToken = authService.refreshAccessToken;
