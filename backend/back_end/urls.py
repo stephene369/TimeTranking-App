@@ -29,6 +29,7 @@ urlpatterns = [
     # Documentation Swagger
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/tasks/', include('tasks.urls')),
 ]
 
 # Ajouter cette configuration pour servir les fichiers média en développement

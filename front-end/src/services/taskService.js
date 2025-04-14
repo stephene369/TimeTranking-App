@@ -31,29 +31,28 @@ const taskService = {
         }
     },
 
-    // front-end/src/services/taskService.js
-    // Dans taskService.js
+    // In taskService.js
     createTask: async (taskData) => {
         try {
             // console.log('Original task data:', taskData);
 
-            // Formatage des données selon le modèle du serveur
+            // Format data according to server model
             const formattedData = {
                 title: taskData.title,
                 description: taskData.description || "",
                 due_date: taskData.dueDate ? dayjs(taskData.dueDate).format('YYYY-MM-DD') : null,
                 priority: taskData.priority || "medium",
-                category: taskData.category, // Assurez-vous que c'est l'ID de la catégorie si nécessaire
+                category: taskData.category, // Make sure this is the category ID if needed
                 completed: taskData.completed || false,
                 reminder: taskData.reminder ? dayjs(taskData.reminder).format('YYYY-MM-DD HH:mm:ss') : null,
                 tags: taskData.tags || [],
-                // Ne pas inclure id, subtasks, created_at, updated_at car ils sont gérés par le backend
-                // Ne pas inclure category_name car c'est probablement un champ calculé côté serveur
+                // Do not include id, subtasks, created_at, updated_at as they are managed by the backend
+                // Do not include category_name as it is probably a computed field on the server side
             };
 
             console.log('Formatted data to send:', formattedData);
 
-            // Envoi de la requête sans le slash final pour éviter les problèmes potentiels
+            // Send request without trailing slash to avoid potential issues
             const response = await api.post('/tasks/', formattedData);
             return response.data;
         } catch (error) {
@@ -155,7 +154,7 @@ const taskService = {
     // Get all categories
     getCategories: async () => {
         try {
-            // Temporairement, retournez des catégories statiques au lieu d'appeler l'API
+            // Temporarily return static categories instead of calling the API
             return [
                 { id: 1, name: 'Homework', color: 'blue' },
                 { id: 2, name: 'Reading', color: 'green' },
@@ -165,12 +164,12 @@ const taskService = {
                 { id: 6, name: 'Other', color: 'gray' }
             ];
 
-            // Commentez temporairement l'appel API
+            // Temporarily comment out API call
             // const response = await api.get('/categories/');
             // return response.data;
         } catch (error) {
             console.error('Error fetching categories:', error);
-            // En cas d'erreur, retournez quand même des catégories par défaut
+            // In case of error, still return default categories
             return [
                 { id: 1, name: 'Homework', color: 'blue' },
                 { id: 2, name: 'Reading', color: 'green' },
