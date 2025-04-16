@@ -32,21 +32,21 @@ const upcomingTasks = [
   { 
     id: 1, 
     title: 'Complete Math Assignment', 
-    dueDate: '2023-11-25', 
+    dueDate: '2025-11-25', 
     priority: 'high',
     category: 'Homework'
   },
   { 
     id: 2, 
     title: 'Read Chapters 7-8', 
-    dueDate: '2023-11-24', 
+    dueDate: '2025-11-24', 
     priority: 'medium',
     category: 'Reading'
   },
   { 
     id: 3, 
     title: 'Research Paper Outline', 
-    dueDate: '2023-11-28', 
+    dueDate: '2025-11-28', 
     priority: 'high',
     category: 'Project'
   },
@@ -57,21 +57,21 @@ const recentTimeEntries = [
     id: 1, 
     activity: 'Math Homework', 
     category: 'Academic', 
-    date: '2023-11-22', 
+    date: '2025-11-22', 
     duration: '2h 15m',
   },
   { 
     id: 2, 
     activity: 'Reading Assignment', 
     category: 'Academic', 
-    date: '2023-11-22', 
+    date: '2025-11-22', 
     duration: '1h 45m',
   },
   { 
     id: 3, 
     activity: 'Research for Project', 
     category: 'Academic', 
-    date: '2023-11-21', 
+    date: '2025-11-21', 
     duration: '3h 30m',
   },
 ];
@@ -87,11 +87,11 @@ const weeklyData = [
 ];
 
 const calendarEvents = [
-  { date: '2023-11-24', type: 'task', content: 'Read Chapters 7-8' },
-  { date: '2023-11-25', type: 'task', content: 'Complete Math Assignment' },
-  { date: '2023-11-28', type: 'task', content: 'Research Paper Outline' },
-  { date: '2023-11-30', type: 'event', content: 'Group Project Meeting' },
-  { date: '2023-12-05', type: 'event', content: 'Midterm Exam' },
+  { date: '2025-11-24', type: 'task', content: 'Read Chapters 7-8' },
+  { date: '2025-11-25', type: 'task', content: 'Complete Math Assignment' },
+  { date: '2025-11-28', type: 'task', content: 'Research Paper Outline' },
+  { date: '2025-11-30', type: 'event', content: 'Group Project Meeting' },
+  { date: '2025-12-05', type: 'event', content: 'Midterm Exam' },
 ];
 
 const Dashboard = () => {
