@@ -15,6 +15,7 @@ import {
   Avatar,
   Tooltip,
   Modal,
+  Empty,
 } from "antd";
 import {
   SearchOutlined,
@@ -27,124 +28,61 @@ import {
   FilterOutlined,
   SortAscendingOutlined,
   UserOutlined,
+  PlayCircleOutlined,
 } from "@ant-design/icons";
+
+import { resourcesData, resourceCategories, resourceTypes } from "../../data/resourcesData";
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
 const { Search } = Input;
 
-// Mock data
-const resources = [
-  {
-    id: 1,
-    title: "Effective Time Management for Students",
-    type: "article",
-    category: "Time Management",
-    description:
-      "Learn how to manage your study time effectively and increase productivity.",
-    author: "Dr. Sarah Johnson",
-    rating: 4.5,
-    reviews: 28,
-    date: "2023-10-15",
-    tags: ["productivity", "time management", "study skills"],
-    url: "#",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 2,
-    title: "Note-Taking Strategies for Academic Success",
-    type: "video",
-    category: "Study Skills",
-    description:
-      "Discover effective note-taking methods to improve retention and understanding.",
-    author: "Prof. Michael Brown",
-    rating: 4.8,
-    reviews: 42,
-    date: "2023-09-22",
-    tags: ["note-taking", "study skills", "academic"],
-    duration: "32:15",
-    url: "#",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 3,
-    title: "Pomodoro Technique Explained",
-    type: "article",
-    category: "Time Management",
-    description:
-      "A detailed guide to implementing the Pomodoro Technique for better focus and productivity.",
-    author: "Emma Wilson",
-    rating: 4.2,
-    reviews: 15,
-    date: "2023-11-05",
-    tags: ["pomodoro", "focus", "productivity"],
-    url: "#",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 4,
-    title: "Stress Management During Exam Period",
-    type: "pdf",
-    category: "Wellness",
-    description: "Strategies to manage stress and anxiety during exam periods.",
-    author: "Dr. Robert Chen",
-    rating: 4.7,
-    reviews: 33,
-    date: "2023-08-18",
-    tags: ["stress", "exams", "mental health"],
-    url: "#",
-    fileSize: "2.4 MB",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 5,
-    title: "How to Create an Effective Study Schedule",
-    type: "video",
-    category: "Planning",
-    description:
-      "Step-by-step guide to creating a personalized study schedule that works for you.",
-    author: "Lisa Taylor",
-    rating: 4.6,
-    reviews: 51,
-    date: "2023-10-30",
-    tags: ["schedule", "planning", "organization"],
-    duration: "28:45",
-    url: "#",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 6,
-    title: "Memory Techniques for Students",
-    type: "article",
-    category: "Study Skills",
-    description:
-      "Learn powerful memory techniques to improve retention and recall for exams.",
-    author: "Prof. David Miller",
-    rating: 4.4,
-    reviews: 19,
-    date: "2023-09-12",
-    tags: ["memory", "study skills", "exams"],
-    url: "#",
-    image: "https://via.placeholder.com/300x200",
-  },
-];
+const YouTubeEmbed = ({ youtubeId, autoplay = false, height = "100%" }) => {
+  const src = `https://www.youtube.com/embed/${youtubeId}${autoplay ? '?autoplay=1' : ''}`;
+  return (
+    <div style={{ position: "relative", width: "100%", height, paddingTop: height === "100%" ? "56.25%" : 0 }}>
+      <iframe
+        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+        src={src}
+        title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
+    </div>
+  );
+};
 
-const categories = [
-  "Time Management",
-  "Study Skills",
-  "Planning",
-  "Wellness",
-  "Technology",
-  "Academic Writing",
-  "Research Skills",
-];
+const PDFPreview = ({ pdfUrl, height = "100%" }) => {
+  return (
+    <div style={{ position: "relative", width: "100%", height, paddingTop: height === "100%" ? "56.25%" : 0 }}>
+      <iframe
+        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+        src={`https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
+        title="PDF Preview"
+      ></iframe>
+    </div>
+  );
+};
 
-const resourceTypes = ["article", "video", "pdf", "tool", "template"];
+const ArticleIcon = () => {
+  return (
+    <div style={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      height: "100%", 
+      backgroundColor: "#f0f2f5" 
+    }}>
+      <BookOutlined style={{ fontSize: 64, color: "#1890ff" }} />
+    </div>
+  );
+};
 
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedResource, setSelectedResource] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const handleSearch = (value) => {
     setSearchTerm(value);
@@ -185,14 +123,219 @@ const Resources = () => {
     }
   };
 
-  const filteredResources = resources.filter(
-    (resource) =>
-      resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+  // Filter resources by search term and category
+  const filteredResources = resourcesData.filter(
+    (resource) => {
+      const matchesSearch = 
+        resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resource.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const matchesCategory = selectedCategory === "all" || resource.category === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    }
   );
+
+  // Render card cover based on resource type
+  const renderCardCover = (resource) => {
+    switch (resource.type) {
+      case "video":
+        return (
+          <div style={{ height: 180, position: "relative" }}>
+            <div style={{ 
+              position: "absolute", 
+              top: 0, 
+              left: 0, 
+              width: "100%", 
+              height: "100%", 
+              background: `url(${resource.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              cursor: "pointer",
+            }}>
+              <div style={{ 
+                position: "absolute", 
+                top: 0, 
+                left: 0, 
+                width: "100%", 
+                height: "100%", 
+                backgroundColor: "rgba(0,0,0,0.3)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}>
+                <PlayCircleOutlined style={{ fontSize: 48, color: "white" }} />
+              </div>
+              <Tag
+                color={getColorForResourceType(resource.type)}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  textTransform: "capitalize",
+                }}
+              >
+                {getIconForResourceType(resource.type)} {resource.type}
+              </Tag>
+            </div>
+          </div>
+        );
+      case "pdf":
+        return (
+          <div style={{ height: 180, position: "relative" }}>
+            <div style={{ 
+              position: "absolute", 
+              top: 0, 
+              left: 0, 
+              width: "100%", 
+              height: "100%", 
+              background: `url(${resource.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}>
+              <div style={{ 
+                position: "absolute", 
+                top: 0, 
+                left: 0, 
+                width: "100%", 
+                height: "100%", 
+                backgroundColor: "rgba(0,0,0,0.3)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}>
+                <FileOutlined style={{ fontSize: 48, color: "white" }} />
+              </div>
+              <Tag
+                color={getColorForResourceType(resource.type)}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  textTransform: "capitalize",
+                }}
+              >
+                {getIconForResourceType(resource.type)} {resource.type}
+              </Tag>
+            </div>
+          </div>
+        );
+      case "article":
+        return (
+          <div style={{ height: 180, position: "relative" }}>
+            <div style={{ 
+              position: "absolute", 
+              top: 0, 
+              left: 0, 
+              width: "100%", 
+              height: "100%", 
+              background: `url(${resource.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}>
+              <div style={{ 
+                position: "absolute", 
+                top: 0, 
+                left: 0, 
+                width: "100%", 
+                height: "100%", 
+                backgroundColor: "rgba(0,0,0,0.3)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}>
+                <BookOutlined style={{ fontSize: 48, color: "white" }} />
+              </div>
+              <Tag
+                color={getColorForResourceType(resource.type)}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  textTransform: "capitalize",
+                }}
+              >
+                {getIconForResourceType(resource.type)} {resource.type}
+              </Tag>
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <div
+            style={{
+              height: 180,
+              background: `url(${resource.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              position: "relative",
+            }}
+          >
+            <Tag
+              color={getColorForResourceType(resource.type)}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                textTransform: "capitalize",
+              }}
+            >
+              {getIconForResourceType(resource.type)} {resource.type}
+            </Tag>
+          </div>
+        );
+    }
+  };
+
+  // Render modal content based on resource type
+  const renderModalContent = (resource) => {
+    switch (resource.type) {
+      case "video":
+        return (
+          <div style={{ marginBottom: 16 }}>
+            <YouTubeEmbed youtubeId={resource.youtubeId} height="400px" />
+          </div>
+        );
+      case "pdf":
+        return (
+          <div style={{ marginBottom: 16 }}>
+            <PDFPreview pdfUrl={resource.url} height="400px" />
+          </div>
+        );
+      case "article":
+        return (
+          <div
+            style={{
+              height: 240,
+              background: `url(${resource.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              borderRadius: 4,
+              marginBottom: 16,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <BookOutlined style={{ fontSize: 64, color: "white" }} />
+          </div>
+        );
+      default:
+        return (
+          <div
+            style={{
+              height: 240,
+              background: `url(${resource.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              borderRadius: 4,
+              marginBottom: 16,
+            }}
+          />
+        );
+    }
+  };
 
   return (
     <div>
@@ -249,9 +392,12 @@ const Resources = () => {
         {/* Resource Categories */}
         <Col span={24}>
           <Card>
-            <Tabs defaultActiveKey="all">
+            <Tabs 
+              defaultActiveKey="all" 
+              onChange={(key) => setSelectedCategory(key)}
+            >
               <TabPane tab="All Resources" key="all" />
-              {categories.map((category) => (
+              {resourceCategories.map((category) => (
                 <TabPane tab={category} key={category} />
               ))}
             </Tabs>
@@ -271,33 +417,12 @@ const Resources = () => {
               xxl: 4,
             }}
             dataSource={filteredResources}
+            locale={{ emptyText: <Empty description="No resources found" /> }}
             renderItem={(item) => (
               <List.Item>
                 <Card
                   hoverable
-                  cover={
-                    <div
-                      style={{
-                        height: 160,
-                        background: `url(${item.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <Tag
-                        color={getColorForResourceType(item.type)}
-                        style={{
-                          position: "absolute",
-                          top: 10,
-                          right: 10,
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        {getIconForResourceType(item.type)} {item.type}
-                      </Tag>
-                    </div>
-                  }
+                  cover={renderCardCover(item)}
                   onClick={() => showResourceDetails(item)}
                 >
                   <Card.Meta
@@ -373,28 +498,18 @@ const Resources = () => {
             href={selectedResource?.url}
             target="_blank"
           >
-            {selectedResource?.type === "pdf" ? "Download" : "Access Resource"}
+            {selectedResource?.type === "pdf" ? "Download PDF" : "Access Resource"}
           </Button>,
         ]}
-        width={700}
+        width={800}
       >
         {selectedResource && (
           <>
-            <div
-              style={{
-                height: 240,
-                background: `url(${selectedResource.image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                borderRadius: 4,
-                marginBottom: 16,
-              }}
-            />
+            {renderModalContent(selectedResource)}
 
             <Row gutter={[16, 16]}>
               <Col span={16}>
                 <Paragraph>{selectedResource.description}</Paragraph>
-
                 <Divider />
 
                 <Space direction="vertical" size={12} style={{ width: "100%" }}>

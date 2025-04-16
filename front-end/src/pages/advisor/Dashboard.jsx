@@ -29,24 +29,24 @@ const AdvisorDashboard = () => {
   ];
   
   const students = [
-    { id: 1, name: 'John Doe', program: 'Computer Science', status: 'active', riskLevel: 'low', lastActive: '2023-10-12', avgHoursWeek: 22.5 },
-    { id: 2, name: 'Jane Smith', program: 'Nursing', status: 'active', riskLevel: 'medium', lastActive: '2023-10-10', avgHoursWeek: 15.2 },
-    { id: 3, name: 'Mike Johnson', program: 'Business Administration', status: 'inactive', riskLevel: 'high', lastActive: '2023-09-28', avgHoursWeek: 8.5 },
-    { id: 4, name: 'Sarah Williams', program: 'Computer Science', status: 'active', riskLevel: 'low', lastActive: '2023-10-11', avgHoursWeek: 19.8 },
-    { id: 5, name: 'Robert Brown', program: 'Automotive Technology', status: 'active', riskLevel: 'high', lastActive: '2023-10-05', avgHoursWeek: 10.3 },
+    { id: 1, name: 'John Doe', program: 'Computer Science', status: 'active', riskLevel: 'low', lastActive: '2025-10-12', avgHoursWeek: 22.5 },
+    { id: 2, name: 'Jane Smith', program: 'Nursing', status: 'active', riskLevel: 'medium', lastActive: '2025-10-10', avgHoursWeek: 15.2 },
+    { id: 3, name: 'Mike Johnson', program: 'Business Administration', status: 'inactive', riskLevel: 'high', lastActive: '2025-09-28', avgHoursWeek: 8.5 },
+    { id: 4, name: 'Sarah Williams', program: 'Computer Science', status: 'active', riskLevel: 'low', lastActive: '2025-10-11', avgHoursWeek: 19.8 },
+    { id: 5, name: 'Robert Brown', program: 'Automotive Technology', status: 'active', riskLevel: 'high', lastActive: '2025-10-05', avgHoursWeek: 10.3 },
   ];
   
   const appointments = [
-    { id: 1, student: 'Jane Smith', program: 'Nursing', date: '2023-10-15', time: '10:00 AM', type: 'Academic Advising' },
-    { id: 2, student: 'Robert Brown', program: 'Automotive Technology', date: '2023-10-15', time: '2:30 PM', type: 'Career Planning' },
-    { id: 3, student: 'Mike Johnson', program: 'Business Administration', date: '2023-10-16', time: '11:00 AM', type: 'Academic Intervention' },
-    { id: 4, student: 'Sarah Williams', program: 'Computer Science', date: '2023-10-17', time: '9:15 AM', type: 'Academic Advising' },
+    { id: 1, student: 'Jane Smith', program: 'Nursing', date: '2025-10-15', time: '10:00 AM', type: 'Academic Advising' },
+    { id: 2, student: 'Robert Brown', program: 'Automotive Technology', date: '2025-10-15', time: '2:30 PM', type: 'Career Planning' },
+    { id: 3, student: 'Mike Johnson', program: 'Business Administration', date: '2025-10-16', time: '11:00 AM', type: 'Academic Intervention' },
+    { id: 4, student: 'Sarah Williams', program: 'Computer Science', date: '2025-10-17', time: '9:15 AM', type: 'Academic Advising' },
   ];
   
   const workshops = [
-    { id: 1, title: 'Effective Time Management', date: '2023-10-15', registered: 18, capacity: 25 },
-    { id: 2, title: 'Resume Building Workshop', date: '2023-10-22', registered: 12, capacity: 20 },
-    { id: 3, title: 'Interview Skills', date: '2023-11-05', registered: 8, capacity: 15 },
+    { id: 1, title: 'Effective Time Management', date: '2025-10-15', registered: 18, capacity: 25 },
+    { id: 2, title: 'Resume Building Workshop', date: '2025-10-22', registered: 12, capacity: 20 },
+    { id: 3, title: 'Interview Skills', date: '2025-11-05', registered: 8, capacity: 15 },
   ];
   
   const getRiskLevelColor = (level) => {
