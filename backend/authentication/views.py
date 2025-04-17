@@ -105,9 +105,25 @@ class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        # Create a copy of the request data to avoid modifying the original
+        login_data = request.data.copy()
+        
+        # Remove the 'remember' field if it exists as it's not needed for authentication
+        if 'remember' in login_data:
+            login_data.pop('remember')
+        
+        print("Processed login data:", login_data)
+        
+        serializer = self.serializer_class(data=login_data)
+        
+        if not serializer.is_valid():
+            print("Login validation errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+
 class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     
