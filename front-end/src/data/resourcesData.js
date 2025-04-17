@@ -12,8 +12,8 @@ const resourcesData = [
     reviews: 28,
     date: "2025-10-15",
     tags: ["productivity", "time management", "study skills"],
-    url: "https://www.mindtools.com/pages/article/time-management-tips-for-students.htm",
-    image: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80",
+    url: "https://pgcc.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991700520107576&context=L&vid=01PGCC_INST:PGCC&lang=en&search_scope=MyInst_and_CI&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,time%20management",
+    image: "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/syndetics.com/index.php?client=primo&isbn=93-80177-54-2/lc.jpg",
   },
   {
     id: 2,
@@ -58,10 +58,10 @@ const resourcesData = [
     reviews: 33,
     date: "2025-08-18",
     tags: ["stress", "exams", "mental health"],
-    url: "https://www.ucl.ac.uk/student-support-wellbeing/resources/pdf/managing-stress-anxiety-during-exams.pdf",
+    url: "https://www.griffith.edu.au/__data/assets/pdf_file/0026/923480/ManagingExamStress_InfoSheet.pdf",
     fileSize: "2.4 MB",
     image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    pdfPreview: "https://www.ucl.ac.uk/student-support-wellbeing/resources/pdf/managing-stress-anxiety-during-exams.pdf",
+    pdfPreview: "https://www.griffith.edu.au/__data/assets/pdf_file/0026/923480/ManagingExamStress_InfoSheet.pdf",
   },
   {
     id: 5,
@@ -92,8 +92,8 @@ const resourcesData = [
     reviews: 19,
     date: "2025-09-12",
     tags: ["memory", "study skills", "exams"],
-    url: "https://www.oxfordlearning.com/memory-techniques-for-studying/",
-    image: "https://via.placeholder.com/300x200",
+    image: "https://pgcc.primo.exlibrisgroup.com/discovery/img/icon_video.png",
+    url: "https://pgcc.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991498260707576&context=L&vid=01PGCC_INST:PGCC&lang=en&search_scope=MyInst_and_CI&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,Memory%20Techniques&offset=0",
   },
   {
     id: 7,
@@ -190,8 +190,8 @@ const resourcesData = [
     reviews: 56,
     date: "2025-11-10",
     tags: ["exam prep", "study strategies", "test taking"],
-    url: "https://www.topuniversities.com/blog/exam-preparation-ten-study-tips",
-    image: "https://via.placeholder.com/300x200",
+    url: "https://go-gale-com.pgcc.idm.oclc.org/ps/i.do?p=STND&u=pgcc_main&id=GALE%7CA682401383&v=2.1&it=r&aty=ip",
+    image: "https://m.media-amazon.com/images/I/81kBXXN+FXL._SL1500_.jpg",
   }
 ];
 

@@ -239,3 +239,7 @@ EMAIL_USE_TLS = True  # False si vous utilisez SSL
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
+DEBUG = False
+ALLOWED_HOSTS = ['172.31.16.39', 'https://d3r70gbasoekw4.cloudfront.net']
+
