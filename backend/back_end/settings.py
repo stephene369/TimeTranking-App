@@ -243,3 +243,6 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 DEBUG = False
 ALLOWED_HOSTS = ['172.31.16.39', 'https://d3r70gbasoekw4.cloudfront.net']
 
+INSTALLED_APPS += ['corsheaders']
+MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
+CORS_ALLOW_ALL_ORIGINS = True  
