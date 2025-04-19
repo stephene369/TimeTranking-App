@@ -253,12 +253,8 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 DEBUG = False
 #ALLOWED_HOSTS = ['172.31.16.39', '54.152.129.71', '54.165.103.86', 'localhost','d3r70gbasoekw4.cloudfront.net']
-ALLOWED_HOSTS = [
-    '172.31.16.39',
-    '54.152.129.71',
-    'localhost',
-    'd3r70gbasoekw4.cloudfront.net'
-]
+ALLOWED_HOSTS = ['*']
+
 
 
 INSTALLED_APPS += ['corsheaders']
