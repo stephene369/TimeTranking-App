@@ -22,6 +22,9 @@ const RegisterForm = () => {
   const [form] = Form.useForm();
 
   const handleSubmit = async (formData) => {
+    console.log('Form submitted:', formData);     // Debug: log form data
+    alert('Form submitted!');                     // Debug: browser alert
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/register/`,
@@ -36,7 +39,7 @@ const RegisterForm = () => {
       console.log('Registration response:', response.data);
       form.resetFields();
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('❌ Registration error:', error);
       if (error.response?.data?.detail) {
         message.error(`❌ ${error.response.data.detail}`);
       } else {
@@ -89,4 +92,3 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
-
