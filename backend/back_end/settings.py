@@ -16,6 +16,16 @@ import environ
 import os
 from datetime import timedelta
 
+import logging
+
+class DebugHostMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        logging.warning(f"Host received: {request.get_host()}")
+        return self.get_response(request)
+
 
 env = environ.Env()
 environ.Env.read_env()
@@ -114,6 +124,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'back_end.settings.DebugHostMiddleware',
     # 'back_end.middleware.RequestLoggingMiddleware',
 ]
 
@@ -241,7 +252,14 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 DEBUG = False
-ALLOWED_HOSTS = ['172.31.16.39', '54.152.129.71', '54.165.103.86', 'localhost','d3r70gbasoekw4.cloudfront.net']
+#ALLOWED_HOSTS = ['172.31.16.39', '54.152.129.71', '54.165.103.86', 'localhost','d3r70gbasoekw4.cloudfront.net']
+ALLOWED_HOSTS = [
+    '172.31.16.39',
+    '54.152.129.71',
+    'localhost',
+    'd3r70gbasoekw4.cloudfront.net'
+]
+
 
 INSTALLED_APPS += ['corsheaders']
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
