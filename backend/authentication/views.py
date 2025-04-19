@@ -225,31 +225,45 @@
 #         # Tout le monde peut voir la liste des conseillers
 #         return User.objects.filter(role='advisor')
 
-
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics, status
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import RegisterSerializer
+from .models import User
+from .utils import Util
 
-@method_decorator(csrf_exempt, name='dispatch')  # 👈 Add this
+
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
     
     def post(self, request):
         print("Received registration data:", request.data) 
-        user = request.data
-        password_plain = user.get("password")
-        serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
+        user_data_input = request.data
+        password_plain = user_data_input.get("password")
+
+        serializer = self.serializer_class(data=user_data_input)
+
+        if not serializer.is_valid():
+            print("❌ Validation errors:", serializer.errors)  # This will print the root cause of 400
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         user = serializer.save()
-        
         user_data = serializer.data
+
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
-        
+
         current_site = get_current_site(request).domain
         relativeLink = reverse("email-verify")
         abs_urls = "http://" + current_site + relativeLink + "?token=" + str(token)
-        
+
         email_body = (
             f"Hi {user.username},\n\n"
             f"Thank you for registering with our Time Management App. "
@@ -264,13 +278,13 @@ class RegisterView(generics.GenericAPIView):
             f"Please keep this information secure.\n\n"
             f"Best regards,\nThe Time Management App Team"
         )
-        
+
         data = {
             "email_body": email_body,
             "email_subject": "Verify your email - Time Management App",
             "to_email": user.email,
         }
-        
+
         Util.send_email(data)
-        
+
         return Response(user_data, status=status.HTTP_201_CREATED)
