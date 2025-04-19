@@ -22,8 +22,8 @@ const RegisterForm = () => {
   const [form] = Form.useForm();
 
   const handleSubmit = async (formData) => {
-    console.log('Form submitted:', formData);     // Debug: log form data
-    alert('Form submitted!');                     // Debug: browser alert
+    console.log('Form submitted:', formData);
+    alert('Form submitted!');
 
     try {
       const response = await axios.post(
@@ -32,6 +32,8 @@ const RegisterForm = () => {
           username: formData.username,
           email: formData.email,
           password: formData.password,
+          first_name: formData.first_name,  // ✅ New
+          last_name: formData.last_name     // ✅ New
         }
       );
 
@@ -70,6 +72,22 @@ const RegisterForm = () => {
           { required: true, message: 'Please enter an email' },
           { type: 'email', message: 'Please enter a valid email address' },
         ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="First Name"
+        name="first_name"
+        rules={[{ required: true, message: 'Please enter your first name' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Last Name"
+        name="last_name"
+        rules={[{ required: true, message: 'Please enter your last name' }]}
       >
         <Input />
       </Form.Item>
