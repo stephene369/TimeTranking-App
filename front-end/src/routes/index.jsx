@@ -106,6 +106,12 @@ const routes = [
     path: '*',
     element: <Navigate to="/" replace />,
   },
+
+  {
+    path: '/login',
+    element: <Login />,
+  }
+  
 ];
 
 export default routes;
