@@ -17,9 +17,11 @@
 import React from 'react';
 import { Form, Input, Button, message } from 'antd';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // ✅ import for redirection
 
 const RegisterForm = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate(); // ✅ react-router hook
 
   const handleSubmit = async (formData) => {
     console.log('Form submitted:', formData);
@@ -32,14 +34,17 @@ const RegisterForm = () => {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          first_name: formData.first_name,  // ✅ New
-          last_name: formData.last_name     // ✅ New
+          first_name: formData.first_name,
+          last_name: formData.last_name,
         }
       );
 
       message.success('✅ User registered successfully!');
       console.log('Registration response:', response.data);
       form.resetFields();
+
+      // ✅ Redirect to login page
+      navigate('/login');
     } catch (error) {
       console.error('❌ Registration error:', error);
       if (error.response?.data?.detail) {
