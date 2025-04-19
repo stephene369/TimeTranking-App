@@ -251,9 +251,10 @@ class RegisterView(generics.GenericAPIView):
         serializer = self.serializer_class(data=user_data_input)
 
         if not serializer.is_valid():
-            print("❌ Validation errors:", serializer.errors)  # This will print the root cause of 400
+            print("❌ Validation errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        # Save the user instance using the validated serializer data
         user = serializer.save()
         user_data = serializer.data
 
