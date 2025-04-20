@@ -265,8 +265,8 @@ class RegisterView(generics.GenericAPIView):
         #current_site = get_current_site(request).domain
         current_site = "3.208.10.152"
         relative_link = reverse("email-verify")
-        #abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
-        abs_url = f"http://3.208.10.152/api/auth/email-verify/?token={str(token)}"
+        abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
+        #abs_url = f"http://3.208.10.152/api/auth/email-verify/?token={str(token)}"
 
 
 
