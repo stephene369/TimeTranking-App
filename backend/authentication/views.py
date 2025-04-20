@@ -242,9 +242,10 @@ from .utils import Util
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
-    
+
     def post(self, request):
-        print("Received registration data:", request.data) 
+        print("✅ Received registration data:", request.data)
+
         user_data_input = request.data
         password_plain = user_data_input.get("password")
 
@@ -254,7 +255,7 @@ class RegisterView(generics.GenericAPIView):
             print("❌ Validation errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Save the user instance using the validated serializer data
+        # Save the validated user
         user = serializer.save()
         user_data = serializer.data
 
@@ -262,14 +263,13 @@ class RegisterView(generics.GenericAPIView):
         token = RefreshToken.for_user(user=user).access_token
 
         current_site = get_current_site(request).domain
-        relativeLink = reverse("email-verify")
-        abs_urls = "http://" + current_site + relativeLink + "?token=" + str(token)
+        relative_link = reverse("email-verify")
+        abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
 
         email_body = (
             f"Hi {user.username},\n\n"
-            f"Thank you for registering with our Time Management App. "
-            f"Please use the link below to verify your email:\n\n"
-            f"{abs_urls}\n\n"
+            f"Thank you for registering with our Time Management App.\n"
+            f"Please use the link below to verify your email:\n\n{abs_url}\n\n"
             f"Your account details:\n"
             f"First Name: {user.first_name}\n"
             f"Last Name: {user.last_name}\n"
@@ -280,12 +280,10 @@ class RegisterView(generics.GenericAPIView):
             f"Best regards,\nThe Time Management App Team"
         )
 
-        data = {
+        Util.send_email({
             "email_body": email_body,
             "email_subject": "Verify your email - Time Management App",
             "to_email": user.email,
-        }
-
-        Util.send_email(data)
+        })
 
         return Response(user_data, status=status.HTTP_201_CREATED)
