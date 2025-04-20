@@ -262,9 +262,13 @@ class RegisterView(generics.GenericAPIView):
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
 
-        current_site = get_current_site(request).domain
+        #current_site = get_current_site(request).domain
+        current_site = "3.208.10.152"
         relative_link = reverse("email-verify")
-        abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
+        #abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
+        abs_url = f"http://3.208.10.152/api/auth/email-verify/?token={str(token)}"
+
+
 
         email_body = (
             f"Hi {user.username},\n\n"
