@@ -262,7 +262,7 @@ class RegisterView(generics.GenericAPIView):
         token = RefreshToken.for_user(user=user).access_token
 
         # ✅ Public IP or domain for email verification
-        current_site = "3.208.10.152"  # Replace with domain if available
+        current_site = "44.223.26.108"  # Replace with domain if available
         relative_link = reverse("email-verify")
         abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
 
