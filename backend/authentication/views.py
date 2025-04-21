@@ -230,7 +230,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from django.urls import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer
 from .models import User
@@ -243,7 +242,7 @@ class RegisterView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        print("💥 RegisterView loaded from:", __file__
+        print("💥 RegisterView loaded from:", __file__)
         print("✅ Received registration data:", request.data)
 
         user_data_input = request.data
@@ -253,7 +252,6 @@ class RegisterView(generics.GenericAPIView):
 
         if not serializer.is_valid():
             print("❌ Validation errors:", serializer.errors)
-            print("🔁 USING RegisterView FROM:", __file__)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         user = serializer.save()
@@ -262,10 +260,9 @@ class RegisterView(generics.GenericAPIView):
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
 
-        # ✅ Force the public IP (not localhost)
-        PUBLIC_BACKEND_HOST = "44.223.26.108"  # Change to your EC2 public IP or domain
+        # ✅ Hardcoded working public IP (force override any localhost/default behavior)
         abs_url = f"http://44.223.26.108/api/auth/email-verify/?token={str(token)}"
-        print("✅ Email verification link:", abs_url)
+        print("✅ FINAL verification URL:", abs_url)
 
         email_body = (
             f"Hi {user.username},\n\n"
