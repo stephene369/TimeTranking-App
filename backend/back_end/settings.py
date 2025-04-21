@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -207,6 +207,12 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['*']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_METHODS = ['*']
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+SECURE_SSL_REDIRECT = False  # Mettre à True si vous utilisez HTTPS
+SESSION_COOKIE_SECURE = False  # Mettre à True si vous utilisez HTTPS
+CSRF_COOKIE_SECURE = False  # Mettre à True si vous utilisez HTTPS
 
 
 CORS_ALLOW_HEADERS = [
