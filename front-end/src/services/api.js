@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authService, { getToken, setTokens, clearTokens } from './authService';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://3.91.38.160/api';
 
 // Créer une instance axios avec la configuration de base
 const api = axios.create({
