@@ -254,17 +254,18 @@ class RegisterView(generics.GenericAPIView):
             print("❌ Validation errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Save the validated user
         user = serializer.save()
         user_data = serializer.data
 
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
 
-        # ✅ Public IP or domain for email verification
-        current_site = "44.223.26.108"  # Replace with domain if available
+        # ✅ Force the public IP (not localhost)
+        PUBLIC_BACKEND_HOST = "44.223.26.108"  # Change to your EC2 public IP or domain
         relative_link = reverse("email-verify")
-        abs_url = f"http://{current_site}{relative_link}?token={str(token)}"
+        abs_url = f"http://{PUBLIC_BACKEND_HOST}{relative_link}?token={str(token)}"
+
+        print("✅ Email verification link:", abs_url)
 
         email_body = (
             f"Hi {user.username},\n\n"
@@ -287,4 +288,3 @@ class RegisterView(generics.GenericAPIView):
         })
 
         return Response(user_data, status=status.HTTP_201_CREATED)
-
