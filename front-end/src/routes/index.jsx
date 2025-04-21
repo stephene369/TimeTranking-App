@@ -2,34 +2,25 @@ import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import ProtectedRoute from '../components/ProtectedRoute';
 
-const Logout = lazy(() => import('../pages/auth/Logout'));
+// Import direct des pages critiques/fréquemment utilisées
+import Welcome from "../pages/Welcome";
+import StudentDashboard from '../pages/student/Dashboard';
+import TimeTracker from '../pages/student/TimeTracker';
+import Tasks from '../pages/student/Tasks';
 
 // Layouts
 const AuthLayout = lazy(() => import('../layouts/AuthLayout'));
 const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'));
 
-const Welcome = lazy(() => import("../pages/Welcome"));
-
-// Auth Pages
+// Lazy loading pour les pages moins fréquemment utilisées
+const Logout = lazy(() => import('../pages/auth/Logout'));
 const Login = lazy(() => import('../pages/auth/Login'));
 const Register = lazy(() => import('../pages/auth/Register'));
-// const ForgotPassword = lazy(() => import('../pages/auth/ForgotPassword'));
-// const ResetPassword = lazy(() => import('../pages/auth/ResetPassword'));
-
-// Student Pages
-const StudentDashboard = lazy(() => import('../pages/student/Dashboard'));
-const TimeTracker = lazy(() => import('../pages/student/TimeTracker'));
-const Tasks = lazy(() => import('../pages/student/Tasks'));
 const Calendar = lazy(() => import('../pages/student/Calendar'));
 const Reports = lazy(() => import('../pages/student/Reports'));
 const StudentProfile = lazy(() => import('../pages/student/Settings'));
 const StudentResources = lazy(() => import('../pages/student/Resources'));
-
-// Advisor Pages
 const AdvisorDashboard = lazy(() => import('../pages/advisor/Dashboard'));
-// const StudentManagement = lazy(() => import('../pages/advisor/StudentManagement'));
-// const AdvisorWorkshops = lazy(() => import('../pages/advisor/Workshops'));
-// const AdvisorProfile = lazy(() => import('../pages/advisor/Profile'));
 
 // Routes configuration
 const routes = [
@@ -41,8 +32,7 @@ const routes = [
       { path: '/', element: <Welcome /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
-      { path: 'logout', element: <Logout /> }, // Ajoutez cette ligne
-      // Autres routes...
+      { path: 'logout', element: <Logout /> },
     ],
   },
  
