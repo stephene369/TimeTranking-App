@@ -242,6 +242,8 @@ class RegisterView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        raise Exception("🔥 PROOF: This is the file being used!")  # ✅ Testing line
+
         print("💥 RegisterView loaded from:", __file__)
         print("✅ Received registration data:", request.data)
 
@@ -260,7 +262,7 @@ class RegisterView(generics.GenericAPIView):
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
 
-        # ✅ Hardcoded working public IP (force override any localhost/default behavior)
+        # ✅ Hardcoded public IP to avoid localhost issues
         abs_url = f"http://44.223.26.108/api/auth/email-verify/?token={str(token)}"
         print("✅ FINAL verification URL:", abs_url)
 
