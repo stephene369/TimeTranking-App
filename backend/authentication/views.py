@@ -263,7 +263,7 @@ class RegisterView(generics.GenericAPIView):
         token = RefreshToken.for_user(user=user).access_token
 
         # ✅ Hardcoded public IP to avoid localhost issues
-        abs_url = f"http://44.223.26.108/api/auth/email-verify/?token={str(token)}"
+        abs_url = f"http://3.91.38.160/api/auth/email-verify/?token={str(token)}"
         print("✅ FINAL verification URL:", abs_url)
 
         email_body = (
