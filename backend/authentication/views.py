@@ -264,9 +264,7 @@ class RegisterView(generics.GenericAPIView):
 
         # ✅ Force the public IP (not localhost)
         PUBLIC_BACKEND_HOST = "44.223.26.108"  # Change to your EC2 public IP or domain
-        relative_link = reverse("email-verify")
-        abs_url = f"http://{PUBLIC_BACKEND_HOST}{relative_link}?token={str(token)}"
-
+        abs_url = f"http://44.223.26.108/api/auth/email-verify/?token={str(token)}"
         print("✅ Email verification link:", abs_url)
 
         email_body = (
