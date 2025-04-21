@@ -242,7 +242,7 @@ class RegisterView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        raise Exception("🔥 PROOF: This is the file being used!")  # ✅ Testing line
+        raise Exception("🔥 PROOF: This is the file being used!")
 
         print("💥 RegisterView loaded from:", __file__)
         print("✅ Received registration data:", request.data)
