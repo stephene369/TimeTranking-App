@@ -277,3 +277,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
 ]
+
+# Optional: allow all methods and headers
+CORS_ALLOW_HEADERS = ["*"]
+CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
