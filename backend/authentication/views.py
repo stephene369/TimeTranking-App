@@ -243,6 +243,7 @@ class RegisterView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        print("💥 RegisterView loaded from:", __file__
         print("✅ Received registration data:", request.data)
 
         user_data_input = request.data
@@ -252,6 +253,7 @@ class RegisterView(generics.GenericAPIView):
 
         if not serializer.is_valid():
             print("❌ Validation errors:", serializer.errors)
+            print("🔁 USING RegisterView FROM:", __file__)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         user = serializer.save()
