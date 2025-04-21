@@ -11,5 +11,5 @@ for /f %%A in ('powershell -command "Get-Date -Format \"dd/MM/yyyy/HH-mm-ss\" "'
 echo %current_date%
 
 git commit -m "Version-%current_date%"
-git push
+git push origin deploy
 echo Commit and push completed successfully!
