@@ -218,7 +218,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://54.221.178.123/api"
     "http://127.0.0.1:5173",
     'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
-    "https://d3r70gbasoekw4.cloudfront.net/api"
+    "https://d3r70gbasoekw4.cloudfront.net"
 ]
 
 # Dans settings.py
