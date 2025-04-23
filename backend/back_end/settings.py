@@ -195,7 +195,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 # OU spécifiez les origines autorisées
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
+    "https://d3r70gbasoekw4.cloudfront.net"
 ]
 
 
