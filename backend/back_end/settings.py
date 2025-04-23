@@ -216,6 +216,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
+    "https://d3r70gbasoekw4.cloudfront.net/api"
 ]
 
 # Dans settings.py
@@ -269,11 +271,11 @@ ALLOWED_HOSTS = ['*']
 
 
 
-CORS_ALLOW_ALL_ORIGINS = True  
+#CORS_ALLOW_ALL_ORIGINS = True  
 
-CORS_ALLOWED_ORIGINS = [
-    'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
-]
+#CORS_ALLOWED_ORIGINS = [
+ #   'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
+#]
 
 # Optional: allow all methods and headers
 CORS_ALLOW_HEADERS = ["*"]
