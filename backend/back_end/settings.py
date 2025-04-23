@@ -261,13 +261,13 @@ SECURE_HSTS_PRELOAD = True
 # 3. Implémentation de la Content Security Policy (CSP)
 ##################################
 # Content Security Policy
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Adjust based on your needs
-CSP_SCRIPT_SRC = ("'self'",)  # Adjust based on your needs
-CSP_IMG_SRC = ("'self'",)
-CSP_FONT_SRC = ("'self'",)
-MIDDLEWARE += ['csp.middleware.CSPMiddleware',]
-INSTALLED_APPS+=['csp']
+# CSP_DEFAULT_SRC = ("'self'",)
+# CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Adjust based on your needs
+# CSP_SCRIPT_SRC = ("'self'",)  # Adjust based on your needs
+# CSP_IMG_SRC = ("'self'",)
+# CSP_FONT_SRC = ("'self'",)
+# MIDDLEWARE += ['csp.middleware.CSPMiddleware',]
+# INSTALLED_APPS+=['csp']
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
