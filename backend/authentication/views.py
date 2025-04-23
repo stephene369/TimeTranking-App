@@ -40,6 +40,7 @@ class RegisterView(generics.GenericAPIView):
         token = RefreshToken.for_user(user=user).access_token
         
         current_site = request.get_host()
+        current_site = "54.221.178.123"
         relativeLink = reverse("email-verify")
         protocol = 'https' if request.is_secure() else 'http'
         abs_urls = f"{protocol}://{current_site}{relativeLink}?token={str(token)}"
