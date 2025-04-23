@@ -195,12 +195,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 # OU spécifiez les origines autorisées
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
+    "https://d3r70gbasoekw4.cloudfront.net"
 ]
 
-# Dans settings.py
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+
 CORS_EXPOSE_HEADERS = ['*']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_METHODS = ['*']
@@ -240,5 +239,45 @@ EMAIL_HOST = "smtp.gmail.com"  # Ou votre fournisseur de messagerie
 EMAIL_PORT = 587  # 465 si vous utilisez SSL
 EMAIL_USE_TLS = True  # False si vous utilisez SSL
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PAEPDSSWOPES_RD")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
+
+
+
+##################################
+# 2. Implement Security Headers
+##################################
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True  # X-Content-Type-Options
+X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+##################################
+# 3. Implémentation de la Content Security Policy (CSP)
+##################################
+# Content Security Policy
+# CSP_DEFAULT_SRC = ("'self'",)
+# CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Adjust based on your needs
+# CSP_SCRIPT_SRC = ("'self'",)  # Adjust based on your needs
+# CSP_IMG_SRC = ("'self'",)
+# CSP_FONT_SRC = ("'self'",)
+# MIDDLEWARE += ['csp.middleware.CSPMiddleware',]
+# INSTALLED_APPS+=['csp']
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+
+##################################
+# 4. Forcer la redirection HTTPS
+##################################
+SECURE_SSL_REDIRECT = True  # Redirects all HTTP requests to HTTPS
+SESSION_COOKIE_SECURE = True  # Cookies only sent over HTTPS
+CSRF_COOKIE_SECURE = True  # CSRF cookies only sent over HTTPS
+
+
