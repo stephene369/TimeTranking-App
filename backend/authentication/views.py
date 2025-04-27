@@ -19,6 +19,7 @@ from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+import requests
 
 
 
@@ -40,7 +41,6 @@ class RegisterView(generics.GenericAPIView):
         token = RefreshToken.for_user(user=user).access_token
         
         # Récupération automatique de l'IP publique du serveur EC2
-        import requests
         try:
             # Méthode 1: Utiliser un service externe pour obtenir l'IP publique
             ec2_public_ip = requests.get('https://api.ipify.org').text
