@@ -21,30 +21,43 @@ from drf_yasg import openapi
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 
+
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
     
     def post(self, request):
-        print("Received registration data:", request.data) 
+        print("Received registration data:", request.data)
         user = request.data
         print(request.data)
         password_plain = user.get("password")
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        
-        
+                  
         user_data = serializer.data
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
         
-        current_site = request.get_host()
-        current_site = "54.221.178.123"
+        # Récupération automatique de l'IP publique du serveur EC2
+        import requests
+        try:
+            # Méthode 1: Utiliser un service externe pour obtenir l'IP publique
+            ec2_public_ip = requests.get('https://api.ipify.org').text
+        except:
+            try:
+                # Méthode 2: Alternative si la première méthode échoue
+                ec2_public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
+            except:
+                # Fallback sur l'IP codée en dur si les deux méthodes échouent
+                ec2_public_ip = "18.215.145.71"
+        
+        # Utilisation de l'IP récupérée
+        current_site = ec2_public_ip
         relativeLink = reverse("email-verify")
         protocol = 'https' if request.is_secure() else 'http'
         abs_urls = f"{protocol}://{current_site}{relativeLink}?token={str(token)}"
-        
+
         # Préparer le corps de l'email
         email_body = (
             f"Hi {user.username},\n\n"

@@ -196,6 +196,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    
+    "https://d3r70gbasoekw4.cloudfront.net",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com",
+    
 
 ]
 
@@ -319,20 +323,7 @@ CSRF_COOKIE_SECURE = True
 # 5. Restriction des configurations CORS
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS += [
-    
-    
-    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/admin/",
-    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/api/auth/",
-    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/token/refresh/",
-    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/swagger/",
-    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/redoc/",
-    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/api/tasks/",
-    "https://d3r70gbasoekw4.cloudfront.net/admin/",
-    "https://d3r70gbasoekw4.cloudfront.net/api/auth/",
-    "https://d3r70gbasoekw4.cloudfront.net/token/refresh/",
-    "https://d3r70gbasoekw4.cloudfront.net/swagger/",
-    "https://d3r70gbasoekw4.cloudfront.net/redoc/",
-    "https://d3r70gbasoekw4.cloudfront.net/api/tasks/",
+
 ]
 
 
