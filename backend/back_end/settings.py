@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env("K_E_Y")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -196,6 +196,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+
 ]
 
 # Dans settings.py
@@ -242,3 +243,99 @@ EMAIL_USE_TLS = True  # False si vous utilisez SSL
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
+
+
+
+
+
+
+
+
+
+"""
+SECURE_BROWSER_XSS_FILTER: Active la protection contre les attaques XSS (Cross-Site Scripting) intégrée aux navigateurs.
+SECURE_CONTENT_TYPE_NOSNIFF: Ajoute l'en-tête X-Content-Type-Options pour empêcher le "MIME sniffing" qui peut mener à des attaques.
+X_FRAME_OPTIONS: Protège contre le clickjacking en empêchant votre site d'être affiché dans des iframes.
+SECURE_HSTS_*: Implémente HSTS (HTTP Strict Transport Security) qui force les connexions HTTPS et protège contre les attaques de type "downgrade".
+"""
+# 2. Implémentation des en-têtes de sécurité
+# Ajout des en-têtes de sécurité
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+
+
+
+
+
+# 3. Implémentation de la Content Security Policy (CSP)
+# Ajout de la Content Security Policy
+INSTALLED_APPS+=["csp"]
+
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'",),
+        'style-src': ("'self'", "'unsafe-inline'"),
+        'script-src': ("'self'",),
+        'img-src': ("'self'",),
+        'font-src': ("'self'",),
+    }
+}
+
+MIDDLEWARE +=[
+        'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',  
+]
+
+
+
+
+
+"""
+SECURE_SSL_REDIRECT: Force la redirection de toutes les requêtes HTTP vers HTTPS.
+SESSION_COOKIE_SECURE: Garantit que les cookies de session ne sont envoyés que via HTTPS.
+CSRF_COOKIE_SECURE: Garantit que les cookies CSRF ne sont 
+    envoyés que via HTTPS. Ces mesures protègent contre 
+    l'interception des données en transit (attaques "man-in-the-middle").
+
+"""
+# 4. Forcer la redirection HTTPS
+# Modification:
+# Configuration HTTPS
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
+
+
+
+# 5. Restriction des configurations CORS
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS += [
+    
+    
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/admin/",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/api/auth/",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/token/refresh/",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/swagger/",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/redoc/",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com/api/tasks/",
+    "https://d3r70gbasoekw4.cloudfront.net/admin/",
+    "https://d3r70gbasoekw4.cloudfront.net/api/auth/",
+    "https://d3r70gbasoekw4.cloudfront.net/token/refresh/",
+    "https://d3r70gbasoekw4.cloudfront.net/swagger/",
+    "https://d3r70gbasoekw4.cloudfront.net/redoc/",
+    "https://d3r70gbasoekw4.cloudfront.net/api/tasks/",
+]
+
+
+
+
+
