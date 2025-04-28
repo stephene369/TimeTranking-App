@@ -1,0 +1,1 @@
+import{u as o,r as s,j as t,c as r,N as a}from"./index-VurQmCUs.js";const u=()=>{const{logout:e}=o();return s.useEffect(()=>{(async()=>{await e()})()},[e]),t.jsxs("div",{style:{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"},children:[t.jsx(r,{tip:"Logging out..."}),t.jsx(a,{to:"/login",replace:!0})]})};export{u as default};

@@ -5,17 +5,7 @@ __pycache__/
 *.so
 .Python
 env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
+
 *.egg-info/
 .installed.cfg
 *.egg   
@@ -71,11 +61,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-# Distribution directories
-dist
-dist-ssr
-*.local
 
 # Misc
 .DS_Store
