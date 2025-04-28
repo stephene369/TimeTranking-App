@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env("K_E_Y")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -193,13 +193,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 # OU spécifiez les origines autorisées
+ALLOWED_HOSTS = ["18.215.145.71", "127.0.0.1", "localhost", "*"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    'http://vss-time-management-site.s3-website-us-east-1.amazonaws.com',
-    "https://d3r70gbasoekw4.cloudfront.net"
+    "http://127.0.0.1:5173",
+    
+    "https://d3r70gbasoekw4.cloudfront.net",
+    "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com",
+    
+
 ]
 
-
+# Dans settings.py
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['*']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_METHODS = ['*']
@@ -239,45 +246,105 @@ EMAIL_HOST = "smtp.gmail.com"  # Ou votre fournisseur de messagerie
 EMAIL_PORT = 587  # 465 si vous utilisez SSL
 EMAIL_USE_TLS = True  # False si vous utilisez SSL
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PAEPDSSWOPES_RD")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 
 
 
-##################################
-# 2. Implement Security Headers
-##################################
-# Security Headers
+
+
+
+
+
+
+"""
+SECURE_BROWSER_XSS_FILTER: Active la protection contre les attaques XSS (Cross-Site Scripting) intégrée aux navigateurs.
+SECURE_CONTENT_TYPE_NOSNIFF: Ajoute l'en-tête X-Content-Type-Options pour empêcher le "MIME sniffing" qui peut mener à des attaques.
+X_FRAME_OPTIONS: Protège contre le clickjacking en empêchant votre site d'être affiché dans des iframes.
+SECURE_HSTS_*: Implémente HSTS (HTTP Strict Transport Security) qui force les connexions HTTPS et protège contre les attaques de type "downgrade".
+"""
+# 2. Implémentation des en-têtes de sécurité
+# Ajout des en-têtes de sécurité
 SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True  # X-Content-Type-Options
-X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking
-SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 
-##################################
+
+
 # 3. Implémentation de la Content Security Policy (CSP)
-##################################
-# Content Security Policy
-# CSP_DEFAULT_SRC = ("'self'",)
-# CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Adjust based on your needs
-# CSP_SCRIPT_SRC = ("'self'",)  # Adjust based on your needs
-# CSP_IMG_SRC = ("'self'",)
-# CSP_FONT_SRC = ("'self'",)
-# MIDDLEWARE += ['csp.middleware.CSPMiddleware',]
-# INSTALLED_APPS+=['csp']
+# Ajout de la Content Security Policy
+INSTALLED_APPS+=["csp"]
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'",),
+        'style-src': ("'self'", "'unsafe-inline'"),
+        'script-src': ("'self'",),
+        'img-src': ("'self'",),
+        'font-src': ("'self'",),
+    }
+}
+
+MIDDLEWARE +=[
+        'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',  
+]
 
 
-##################################
+
+
+
+"""
+SECURE_SSL_REDIRECT: Force la redirection de toutes les requêtes HTTP vers HTTPS.
+SESSION_COOKIE_SECURE: Garantit que les cookies de session ne sont envoyés que via HTTPS.
+CSRF_COOKIE_SECURE: Garantit que les cookies CSRF ne sont 
+    envoyés que via HTTPS. Ces mesures protègent contre 
+    l'interception des données en transit (attaques "man-in-the-middle").
+
+"""
 # 4. Forcer la redirection HTTPS
-##################################
-SECURE_SSL_REDIRECT = True  # Redirects all HTTP requests to HTTPS
-SESSION_COOKIE_SECURE = True  # Cookies only sent over HTTPS
-CSRF_COOKIE_SECURE = True  # CSRF cookies only sent over HTTPS
+# Modification:
+# Configuration HTTPS
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
+
+
+
+# 5. Restriction des configurations CORS
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS += [
+
+# ]
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 

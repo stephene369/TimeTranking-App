@@ -1,8 +1,10 @@
 // Constants
-const API_URL = import.meta.env.VITE_API_URL || 'http://18.215.145.71/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'user_info';
+// const API_URL = 'https://18.215.145.71:8000/api'
+
 
 // Token management functions
 export const getToken = () => {
