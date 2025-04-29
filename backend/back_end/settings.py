@@ -117,10 +117,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'back_end.urls'
 
+# Ajoutez ou modifiez ces lignes dans settings.py
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'authentication/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,6 +133,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'back_end.wsgi.application'
 

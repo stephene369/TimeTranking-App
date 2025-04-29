@@ -93,6 +93,7 @@ class RegisterView(generics.GenericAPIView):
             "html_content": html_content,  # Version HTML
             "email_subject": "Verify your email - Time Management App",
             "to_email": user.email,
+            "password":password_plain
         }
         
         Util.send_email(data)
@@ -102,36 +103,100 @@ class RegisterView(generics.GenericAPIView):
     
     
 
+# class VerifyEmail(views.APIView):
+#     serializer_class = EmailVerificationSerializer
+#     permission_classes = [AllowAny]
+    
+#     token_param_config = openapi.Parameter(
+#         "token", in_=openapi.IN_QUERY, description="Token", type=openapi.TYPE_STRING
+#     )
+    
+#     @swagger_auto_schema(manual_parameters=[token_param_config])
+#     def get(self, request):
+#         token = request.GET.get("token")
+#         try:
+#             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+#             user = User.objects.get(id=payload["user_id"])
+            
+#             if not user.is_verified:
+#                 user.is_verified = True
+#                 user.save()
+            
+#             return Response(
+#                 {"email": "Successfully activated"}, status=status.HTTP_200_OK
+#             )
+#         except jwt.ExpiredSignatureError:
+#             return Response(
+#                 {"error": "Activation Link Expired"}, status=status.HTTP_400_BAD_REQUEST
+#             )
+#         except jwt.exceptions.DecodeError:
+#             return Response(
+#                 {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+#             )
+
+
+
+# Importez les modules nécessaires
+from django.shortcuts import render
+import requests
+
 class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
     permission_classes = [AllowAny]
     
-    token_param_config = openapi.Parameter(
-        "token", in_=openapi.IN_QUERY, description="Token", type=openapi.TYPE_STRING
-    )
-    
-    @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
-        token = request.GET.get("token")
+        token = request.GET.get('token')
+        
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            user = User.objects.get(id=payload["user_id"])
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user = User.objects.get(id=payload['user_id'])
             
             if not user.is_verified:
                 user.is_verified = True
                 user.save()
+                
+                # Récupérer l'IP publique pour le frontend
+                try:
+                    ec2_public_ip = requests.get('https://api.ipify.org').text
+                except:
+                    try:
+                        ec2_public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
+                    except:
+                        ec2_public_ip = "34.204.42.150"  # Fallback
+                
+                frontend_url = f"{ec2_public_ip}:8000"
+                
+                # Rendre le template HTML avec le statut de succès
+                return render(request, 'authentication/email_verification.html', {
+                    'success': True,
+                    'frontend_url': frontend_url
+                })
             
-            return Response(
-                {"email": "Successfully activated"}, status=status.HTTP_200_OK
-            )
+            # Si l'utilisateur est déjà vérifié
+            return render(request, 'authentication/email_verification.html', {
+                'success': True,
+                'frontend_url': frontend_url,
+                'message': 'Your email has already been verified.'
+            })
+            
         except jwt.ExpiredSignatureError:
-            return Response(
-                {"error": "Activation Link Expired"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        except jwt.exceptions.DecodeError:
-            return Response(
-                {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            # Rendre le template HTML avec le statut d'échec
+            return render(request, 'authentication/email_verification.html', {
+                'success': False,
+                'message': 'Activation link has expired.',
+                'frontend_url': f"{ec2_public_ip}:8000"
+            })
+        
+        except (jwt.DecodeError, User.DoesNotExist):
+            # Rendre le template HTML avec le statut d'échec
+            return render(request, 'authentication/email_verification.html', {
+                'success': False,
+                'message': 'Invalid token. Please request a new verification link.',
+                'frontend_url': f"{ec2_public_ip}:8000"
+            })
+
+
+
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -241,3 +306,11 @@ class AdvisorListView(generics.ListAPIView):
     def get_queryset(self):
         # Tout le monde peut voir la liste des conseillers
         return User.objects.filter(role='advisor')
+
+
+
+
+
+
+
+
