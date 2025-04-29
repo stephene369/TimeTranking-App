@@ -194,17 +194,48 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # OU spécifiez les origines autorisées
 ALLOWED_HOSTS = ["18.215.145.71", "127.0.0.1", "localhost", "*"]
+
+
+import socket
+import requests
+
+# Fonction pour obtenir l'IP publique
+def get_public_ip():
+    try:
+        # Méthode 1: Utiliser un service externe
+        response = requests.get('https://api.ipify.org', timeout=5)
+        if response.status_code == 200:
+            return response.text
+    except:
+        pass
+    
+    try:
+        # Méthode 2: Service de métadonnées EC2
+        response = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4', timeout=2)
+        if response.status_code == 200 and response.text:
+            return response.text
+    except:
+        pass
+    
+    # Fallback: Utiliser l'IP privée (pas idéal)
+    return socket.gethostbyname(socket.gethostname())
+
+# Obtenir l'IP publique
+public_ip = get_public_ip()
+
+
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    
-        "http://localhost:8000",
+    "http://localhost:8000",
     "http://127.0.0.1:8000",
     "https://d3r70gbasoekw4.cloudfront.net",
     "http://vss-time-management-site.s3-website-us-east-1.amazonaws.com",
-    
-
+    f"http://{public_ip}:8000",  # 
 ]
+
+
 
 # Dans settings.py
 CORS_ALLOW_ALL_ORIGINS = True
