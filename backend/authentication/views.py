@@ -147,36 +147,39 @@ class VerifyEmail(views.APIView):
     def get(self, request):
         token = request.GET.get('token')
         
+        # Récupérer l'IP publique pour le frontend (en dehors du bloc try)
+        try:
+            ec2_public_ip = requests.get('https://api.ipify.org').text
+        except:
+            try:
+                ec2_public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
+            except:
+                ec2_public_ip = "34.204.42.150"  # Fallback
+        
+        frontend_url = f"{ec2_public_ip}:8000"
+        
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
             user = User.objects.get(id=payload['user_id'])
             
-            if not user.is_verified:
-                user.is_verified = True
-                user.save()
-                
-                # Récupérer l'IP publique pour le frontend
-                try:
-                    ec2_public_ip = requests.get('https://api.ipify.org').text
-                except:
-                    try:
-                        ec2_public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
-                    except:
-                        ec2_public_ip = "34.204.42.150"  # Fallback
-                
-                frontend_url = f"{ec2_public_ip}:8000"
-                
-                # Rendre le template HTML avec le statut de succès
+            # Vérifier si l'utilisateur est déjà vérifié
+            if user.is_verified:
+                # Message spécifique pour les utilisateurs déjà vérifiés
                 return render(request, 'authentication/email_verification.html', {
                     'success': True,
-                    'frontend_url': frontend_url
+                    'frontend_url': frontend_url,
+                    'message': 'Your email has already been verified. You can now log in to your account.'
                 })
             
-            # Si l'utilisateur est déjà vérifié
+            # Si l'utilisateur n'est pas encore vérifié, le vérifier
+            user.is_verified = True
+            user.save()
+            
+            # Rendre le template HTML avec le statut de succès
             return render(request, 'authentication/email_verification.html', {
                 'success': True,
                 'frontend_url': frontend_url,
-                'message': 'Your email has already been verified.'
+                'message': 'Your email has been successfully verified. You can now log in to your account.'
             })
             
         except jwt.ExpiredSignatureError:
@@ -184,16 +187,34 @@ class VerifyEmail(views.APIView):
             return render(request, 'authentication/email_verification.html', {
                 'success': False,
                 'message': 'Activation link has expired.',
-                'frontend_url': f"{ec2_public_ip}:8000"
+                'frontend_url': frontend_url
             })
         
-        except (jwt.DecodeError, User.DoesNotExist):
+        except jwt.DecodeError:
             # Rendre le template HTML avec le statut d'échec
             return render(request, 'authentication/email_verification.html', {
                 'success': False,
                 'message': 'Invalid token. Please request a new verification link.',
-                'frontend_url': f"{ec2_public_ip}:8000"
+                'frontend_url': frontend_url
             })
+        
+        except User.DoesNotExist:
+            # Rendre le template HTML avec le statut d'échec
+            return render(request, 'authentication/email_verification.html', {
+                'success': False,
+                'message': 'User not found. Please register again.',
+                'frontend_url': frontend_url
+            })
+        
+        except Exception as e:
+            # Gérer toutes les autres exceptions
+            return render(request, 'authentication/email_verification.html', {
+                'success': False,
+                'message': f'An error occurred: {str(e)}',
+                'frontend_url': frontend_url
+            })
+
+
 
 
 
