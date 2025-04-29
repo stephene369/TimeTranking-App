@@ -35,7 +35,7 @@ class RegisterView(generics.GenericAPIView):
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-                  
+        
         user_data = serializer.data
         user = User.objects.get(email=user_data["email"])
         token = RefreshToken.for_user(user=user).access_token
@@ -53,12 +53,26 @@ class RegisterView(generics.GenericAPIView):
                 ec2_public_ip = "18.215.145.71"
         
         # Utilisation de l'IP récupérée
-        current_site = ec2_public_ip
+        current_site = ec2_public_ip+":8080"
         relativeLink = reverse("email-verify")
         protocol = 'https' if request.is_secure() else 'http'
         abs_urls = f"{protocol}://{current_site}{relativeLink}?token={str(token)}"
-
-        # Préparer le corps de l'email
+        
+        # Préparer les données pour le template HTML
+        email_data = {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'role': user.get_role_display(),
+            'password': password_plain,
+            'verification_url': abs_urls
+        }
+        
+        # Générer le contenu HTML
+        html_content = Util.get_verification_email_html(email_data)
+        
+        # Préparer le corps de l'email en texte simple (pour les clients qui ne supportent pas HTML)
         email_body = (
             f"Hi {user.username},\n\n"
             f"Thank you for registering with our Time Management App. "
@@ -75,7 +89,8 @@ class RegisterView(generics.GenericAPIView):
         )
         
         data = {
-            "email_body": email_body,
+            "email_body": email_body,  # Version texte simple
+            "html_content": html_content,  # Version HTML
             "email_subject": "Verify your email - Time Management App",
             "to_email": user.email,
         }
@@ -83,6 +98,9 @@ class RegisterView(generics.GenericAPIView):
         Util.send_email(data)
         
         return Response(user_data, status=status.HTTP_201_CREATED)
+
+    
+    
 
 class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
