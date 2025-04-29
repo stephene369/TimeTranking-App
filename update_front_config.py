@@ -36,7 +36,7 @@ public_ip = get_public_ip()
 print(f"Detected public IP: {public_ip}")
 
 # Update the frontend .env file
-frontend_env_path = "/home/ubuntu/deploy2/front-end/.env.production.local"
+frontend_env_path = "/home/ubuntu/deploy2/front-end/.env"
 with open(frontend_env_path, "w") as f:
     f.write(f"VITE_API_URL=http://{public_ip}:8080/api\n")
 print(f"Updated {frontend_env_path}")
