@@ -36,13 +36,13 @@ public_ip = get_public_ip()
 print(f"Detected public IP: {public_ip}")
 
 # Update the frontend .env file
-frontend_env_path = "/home/ubuntu/deploy2/front-end/.env"
+frontend_env_path = "/home/ubuntu/deploy/front-end/.env"
 with open(frontend_env_path, "w") as f:
     f.write(f"VITE_API_URL=http://{public_ip}:8080/api\n")
 print(f"Updated {frontend_env_path}")
 
 # Optionally update vite.config.js
-vite_config_path = "/home/ubuntu/deploy2/front-end/vite.config.js"
+vite_config_path = "/home/ubuntu/deploy/front-end/vite.config.js"
 if os.path.exists(vite_config_path):
     with open(vite_config_path, "r") as f:
         content = f.read()
