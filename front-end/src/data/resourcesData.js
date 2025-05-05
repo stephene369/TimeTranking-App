@@ -1,6 +1,50 @@
 // Educational resources data
 const resourcesData = [
   {
+    "id": -3,
+    "title": "Time Management Essentials: The Tools You Need to Maximize Your Attention, Energy, and Productivity",
+    "type": "eBook",
+    "category": "Time management",
+    "description": "Must-know concepts and smart strategies for values-based time management—from the new Business Essentials Series. Time management is an essential skill that every professional needs, no matter the industry.",
+    "author": "Anna Dearmon Kornick",
+    "rating": null,
+    "reviews": null,
+    "date": "2023-01-01",
+    "tags": ["time management", "productivity", "business", "self-help"],
+    "url": "https://pgcc.summon.serialssolutions.com/search?s.fvf%5B%5D=ContentType%2CBook+%2F+eBook&s.q=math#!/search?pn=1&ho=t&include.ft.matches=f&fvf=ContentType,Book%20%2F%20eBook,f&l=en&q=time%20management:~:text=Time%20Management%20Essentials%3A%20The%20Tools%20You%20Need%20to%20Maximize%20Your%20Attention%2C%20Energy%2C%20and%20Productivity",
+    "image": "https://pgcc.summon.serialssolutions.com/2.0.0/image/custom?url=https%3A%2F%2Fwww.safaribooksonline.com%2Flibrary%2Fcover%2F9781264988860"
+  },  
+  {
+    "id": -2,
+    "title": "How to Study",
+    "type": "Book",
+    "category": "Study",
+    "description": "Part of Ron Fry's How to Study program, this 6th edition offers strategies to improve study habits, productivity, and academic performance.",
+    "author": "Ronald W. Fry",
+    "rating": null,
+    "reviews": null,
+    "date": "2005-01-01",
+    "tags": ["study skills", "education", "self-help", "learning"],
+    "url": "https://pgcc.summon.serialssolutions.com/search?s.fvf%5B%5D=ContentType%2CBook+%2F+eBook&s.q=math#!/search?pn=1&ho=t&include.ft.matches=f&fvf=ContentType,Book%20%2F%20eBook,f&l=en&q=how%20to%20study:~:text=Quick%20Look-,How%20to%20study,-by%20Fry%2C%20Ronald",
+    "image": "https://covers-cdn.summon.serialssolutions.com/index.aspx?isbn=9781401889111/sc.gif&client=summon&freeimage=true"
+  },
+  {
+    "id": -1,
+    "title": "Wellness Culture: How the Wellness Movement has been used to Empower, Profit and Misinform",
+    "type": "eBook",
+    "category": "Study",
+    "description": "Wellness has become synonymous with yoga, meditation, and other forms of self-care—but this book critically explores how the wellness movement has also been used to empower, profit, and misinform.",
+    "author": "Stephanie Alice Baker",
+    "rating": null,
+    "reviews": null,
+    "date": "2022-01-01",
+    "tags": ["wellness", "self-care", "sociology", "health", "culture"],
+    "url": "https://pgcc.summon.serialssolutions.com/search?s.fvf%5B%5D=ContentType%2CBook+%2F+eBook&s.q=math#!/search?pn=1&ho=t&include.ft.matches=f&fvf=ContentType,Book%20%2F%20eBook,f&l=en&q=Wellness:~:text=Wellness%20Culture%3A%20How,Baker%2C%20Stephanie%20Alice",
+    "image": "https://pgcc.summon.serialssolutions.com/2.0.0/image/custom?url=https%3A%2F%2Fvle.dmmserver.com%2Fmedia%2F640%2F97818026%2F9781802624670.jpg"
+  }
+,  
+
+  {
     "id": 1,
     "title": "Python How-To",
     "type": "eBook",
@@ -11,7 +55,7 @@ const resourcesData = [
     "reviews": null,
     "date": "2023-01-01",
     "tags": ["python", "programming", "reference"],
-    "url": "https://pgcc.summon.serialssolutions.com/2.0.0/link/0/eLvHCXMwhV1LTwIxEJ4oXDz5jqIY_sBC37ubED0IhMQYPMBBL6Td7XgQwSw-4sXfbmdd8HHx2DRt0jYz_Wba-T4AKdos-uMTlLVaa2kZCZqhURaZds5qEaMU3NMD72CSTnrq7lrfVl91SuWvKj_QJp3K2Wz9jFqSPVDuvPNBHLEE0oNfDWFe58IWm1AXwf5DKFYfjXr9q3XOhbTCVcKovms1oCLh-Z6AKEMthjj1xzUz2IG6p9qDXdjw8z3YXikutCoD3IdG99EWD-c371Tx3-2UjdZw8RaNFwcwHvTHl8OoUjeIltrIKGUojdMmdegMhoufuODz1MXMJopo_2KrvXTCJJyjTZgXmeaILJx8ksUukYdQmy_m_ghaAQGkXGJuZB7wATGEouLc5Zgqg5jnx9D8WtKUgPty-iqmv5bc-Kf_BLZIZL389iZPofZcvPgm1J7us-ys2uJPifCB5A",
+    "url": "https://pgcc.summon.serialssolutions.com/search?s.fvf%5B%5D=ContentType%2CBook+%2F+eBook&s.q=math#!/search?pn=1&ho=t&include.ft.matches=f&fvf=ContentType,Book%20%2F%20eBook,f&l=en&q=python:~:text=Python%20How%2DTo,important%20Python...",
     "image": "https://pgcc.summon.serialssolutions.com/2.0.0/image/custom?url=https%3A%2F%2Fwww.safaribooksonline.com%2Flibrary%2Fcover%2F9781617299742"
   },
   {
